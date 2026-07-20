@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qcraft"
+version = "0.1.0"
+description = "Python implementation of the IMF Quantitative Climate Risk Assessment Fiscal Tool."
+requires-python = ">=3.13"
+dependencies = [
+    "fastpyxl",
+    "numpy",
+]
+
+[tool.setuptools]
+packages = ["qcraft"]
+
+[dependency-groups]
+dev = [
+    "quarto>=0.1.0",
+    "great-docs>=0.12.0",
+    "pandas",
+    "polars",
+    "matplotlib",
+]
+validation = [
+    "xlwings>=0.35.3",
+    "pywin32>=311; sys_platform == 'win32'",
+]

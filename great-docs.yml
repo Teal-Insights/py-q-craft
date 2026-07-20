@@ -1,0 +1,157 @@
+# Great Docs Configuration
+# See https://posit-dev.github.io/great-docs/user-guide/configuration.html
+
+# Module Name (optional)
+# ----------------------
+# Set this if your importable module name differs from the project name.
+# Example: project 'py-yaml12' with module name 'yaml12'
+module: qcraft
+site_url: "https://teal-insights.github.io/py-q-craft/"
+repo: https://github.com/Teal-Insights/py-q-craft
+display_name: Q-CRAFT
+homepage: user_guide
+
+# Docstring Parser
+# ----------------
+# The docstring format used in your package (numpy, google, or sphinx)
+parser: google
+
+# Dynamic Introspection
+# ---------------------
+# Use runtime introspection for more accurate documentation (default: true)
+# Set to false if your package has cyclic alias issues (e.g., PyO3/Rust bindings)
+dynamic: false
+
+# API Discovery Settings
+# ----------------------
+# Exclude items from auto-documentation
+# exclude:
+#   - InternalClass
+#   - helper_function
+
+# Logo & Favicon
+# ---------------
+# Point to a single logo file (replaces the text title in the navbar):
+# logo: assets/logo.svg
+#
+# For light/dark variants:
+# logo:
+#   light: assets/logo-light.svg
+#   dark: assets/logo-dark.svg
+#
+# To show the text title alongside the logo, add: show_title: true
+
+# Funding / Copyright Holder
+# --------------------------
+# Credit the organization that funds or holds copyright for this package.
+# Displays in sidebar and footer. Homepage and ROR provide links.
+# funding:
+#   name: "Posit Software, PBC"
+#   roles:
+#     - Copyright holder
+#     - funder
+#   homepage: https://posit.co
+#   ror: https://ror.org/03wc8by49
+
+# API Reference Structure
+# -----------------------
+# Customize the sections below to organize your API documentation.
+# - Reorder items within a section to change their display order
+# - Move items between sections or create new sections
+# - Use 'members: false' to exclude methods from documentation
+# - Add 'desc:' to sections for descriptions
+
+reference:
+  - title: Functions
+    desc: Utility functions
+    contents:
+      - compute_all
+      - compute_baseline_debt_stabilizing_primary_balance
+      - compute_baseline_debt_to_gdp
+      - compute_baseline_employment_growth
+      - compute_baseline_fiscal_consolidation_gap
+      - compute_baseline_gdp_deflator_growth
+      - compute_baseline_interest_expenditure_pct_gdp
+      - compute_baseline_interest_rate
+      - compute_baseline_labour_productivity_growth
+      - compute_baseline_nominal_gdp_growth
+      - compute_baseline_overall_balance_pct_gdp
+      - compute_baseline_population_growth
+      - compute_baseline_primary_balance_pct_gdp
+      - compute_baseline_primary_expenditure_pct_gdp
+      - compute_baseline_real_gdp_growth
+      - compute_baseline_revenue_pct_gdp
+      - compute_scenario_debt_stabilizing_primary_balance
+      - compute_scenario_debt_to_gdp
+      - compute_scenario_fiscal_consolidation_gap
+      - compute_scenario_interest_expenditure_pct_gdp
+      - compute_scenario_nominal_gdp_growth
+      - compute_scenario_overall_balance_pct_gdp
+      - compute_scenario_primary_balance_pct_gdp
+      - compute_scenario_primary_expenditure_pct_gdp
+      - compute_scenario_real_gdp_level_index
+      - list_computes
+      - list_groups
+      - list_reader_leaves
+      - list_reader_ranges
+      - list_readers
+      - list_setters
+      - make_context
+      - read_country
+      - read_debt_target
+      - read_demography_scenario
+      - read_discrete_primary_expenditure_shocks
+      - read_discrete_primary_expenditure_shocks_range
+      - read_discrete_revenue_shocks
+      - read_discrete_revenue_shocks_range
+      - read_expenditure_rigidity
+      - read_fiscal_rule_enabled
+      - read_inflation_end
+      - read_inflation_start
+      - read_interest_rate_mode
+      - read_productivity_end
+      - read_productivity_start
+      - read_real_interest_rate
+      - set_country
+      - set_debt_target
+      - set_demography_scenario
+      - set_discrete_primary_expenditure_shocks
+      - set_discrete_revenue_shocks
+      - set_expenditure_rigidity
+      - set_fiscal_rule_enabled
+      - set_inflation_end
+      - set_inflation_start
+      - set_interest_rate_mode
+      - set_productivity_end
+      - set_productivity_start
+      - set_real_interest_rate
+
+# Site URL
+# --------
+# Canonical address of the deployed documentation site.
+# Required for subdirectory deployments, skills page install commands,
+# .well-known/ discovery, and sitemaps.
+# site_url: "https://your-org.github.io/your-package/"
+
+# Site Settings
+# -------------
+# site:
+#   theme: flatly              # Quarto theme (default: flatly)
+#   toc: true                  # Show table of contents (default: true)
+#   toc-depth: 2               # TOC heading depth (default: 2)
+#   toc-title: On this page    # TOC title (default: "On this page")
+
+# Jupyter Kernel
+# --------------
+# Jupyter kernel to use for executing code cells in .qmd files.
+# This is set at the project level so it applies to all pages, including
+# auto-generated API reference pages. Can be overridden in individual .qmd
+# file frontmatter if needed for special cases.
+jupyter: python3
+
+# CLI Documentation
+# -----------------
+# cli:
+#   enabled: true              # Enable CLI documentation
+#   module: my_package.cli     # Module containing Click commands
+#   name: cli                  # Name of the Click command object

@@ -1,0 +1,41 @@
+---
+title: "Introduction"
+---
+
+Climate change poses long-term risks to economic growth and public finances. The slow but persistent increase in temperature, shifts in precipitation patterns, and more volatile weather events can have long-term macroeconomic effects by slowing productivity growth, depleting capital stock, and adversely affecting human capital. These macroeconomic effects will add to fiscal pressures, which could accumulate over time if a government does not adapt. However, the slow‑building, significant nature of the economic effects means the associated fiscal risks might not be discernible over the budget cycle or even the medium‑term fiscal framework horizon.
+
+The extent of macroeconomic fiscal risks varies across climate change scenarios. There is considerable uncertainty surrounding global efforts to reduce carbon emissions and how emissions affect the economy. Nevertheless, rising average temperatures are expected to negatively impact economic output, particularly in severe scenarios. Kahn et al. (2021) estimate that global GDP per capita reductions could be as low as one percent by the end of the century if all Paris Agreement commitments are implemented, or as high as 7 to 13 percent in pessimistic scenarios relative to a baseline following historical temperature trends. Beneath these global effects, there is considerable cross‑country variation in potential macroeconomic, and thus fiscal, effects.
+
+In assessing macroeconomic fiscal risks from climate change, country authorities should consider a range of scenarios, from benign to pessimistic. Exploring a pessimistic scenario helps define a boundary of worst‑case but plausible outcomes. Quantification of long‑term fiscal risks under different warming scenarios informs policymaking and illuminates trade‑offs involving long‑term commitments and fiscal pressures. A high‑level quantification exercise also helps identify areas for deeper analysis, including specific expenditure or revenue categories, financing and debt dynamics, and discrete climate‑change‑related fiscal risks (e.g., natural disasters that trigger higher relief, recovery, and reconstruction expenditure, or materialisation of contingent liabilities).
+
+The Quantitative Climate Change Risk Assessment Fiscal Tool (Q‑CRAFT) is now available as a Python package. It is a programmatic reimplementation of the original Q‑CRAFT Excel workbook, produced using programmatic extraction, machine translation, and AI. The tool supports governments in quantifying macroeconomic fiscal risks of climate change. It projects stylized macroeconomic and fiscal prospects for 171 economies under different climate change scenarios through 2099, using a simple production function and standard debt‑dynamic equations on top of pre‑loaded budgetary, economic, and demographic data. Cross‑country empirical estimates of temperature impacts on GDP per capita (following the Kahn 2021 methodology) are applied to a baseline to project key fiscal indicators—such as the debt‑to‑GDP ratio—under alternative climate scenarios. The tool is essentially a partial‑equilibrium framework.
+
+You can install Q‑CRAFT directly from its repository:
+```bash
+uv add "qcraft @ git+https://github.com/Teal-Insights/py-q-craft"
+```
+
+Once installed, the main entry point is the `qcraft.api` module. A minimal start creates a context object:
+
+```{python}
+from qcraft.api import make_context
+
+ctx = make_context()
+print(f"Q‑CRAFT context initialized: {ctx}")
+```
+
+Q‑CRAFT serves as a starting point for climate change fiscal risk analysis. The results are stylized, yet based on country‑specific empirical data. The tool is useful for Ministries of Finance, Economic Development, and Central Banks. It is designed to generate stylized analysis at different capacity levels and can serve as a foundation for in‑depth fiscal sustainability analysis using more sophisticated general‑equilibrium models and granular data.
+
+Q‑CRAFT’s stylized results do not account for potential impacts of climate‑change‑induced natural disasters, sea‑level rise risks, and other environmental risks, rendering the outcomes conservative. Inference about income losses up to 2099 based on past data involves model uncertainty, and climate‑change scenario analysis is subject to deep uncertainty. The scenarios and their economic impacts reflect historical relationships between changing temperatures and economic outcomes. Therefore, the empirical data used for Q‑CRAFT does not account for tipping points, non‑market damages (e.g., morbidity and mortality, conflicts, food insecurity, or spillovers). Climate change is likely to aggravate specific fiscal risks following discrete events such as the triggering of implicit or explicit contingent liabilities, but these are not analyzed in the tool. Instead, Q‑CRAFT provides an option to manually add potential fiscal impacts of discrete events like increased expenditure on relief, recovery, and reconstruction. The tool also does not generate information on the fiscal impact of climate change adaptation spending.
+
+Q‑CRAFT’s operating structure is transparent, and it can be deployed without any additional data, even in low‑capacity settings. The tool pre‑loads publicly available economic, fiscal, and demographic data from the IMF’s World Economic Outlook (WEO), the United Nations (UN), and the World Bank (WB). Country expertise, however, is needed to generate a baseline scenario that aligns with a country’s macroeconomic and fiscal framework.
+
+Q‑CRAFT supplements country macroeconomic models. It is not a forecasting model nor a general‑equilibrium model of the economy. Long‑term projections for productivity growth, inflation, and interest rates are assumptions that can be manually changed. Structural transformation of the economy, fiscal implications of demographic changes, and fiscal effects of climate change adaptation are not explored in detail. The external and monetary sectors are exogenous. Country authorities should use Q‑CRAFT alongside other models for budget preparation, policy analysis, and medium‑term debt sustainability analysis. Environmental agencies will likely have detailed models of climate change; Q‑CRAFT analysis should be used in conjunction with those techniques.
+
+As with any tool, the robustness of the baseline created in Q‑CRAFT depends on the inputs and assumptions. The package comes pre‑loaded with international data: UN population projections to 2100, IMF WEO projections (currently to 2028) for macro‑fiscal variables, WB World Development Indicators (WDI) historical data for labor productivity, and estimates of the effect of climate change on GDP per capita growth to 2099. Users can substitute their own data—including medium‑term fiscal frameworks, debt sustainability analyses, and demographic projections—to customize outputs to the national context.
+
+This documentation will be periodically updated. The climate scenarios reflect those employed by the research community, and the empirical estimates are taken from recent peer‑reviewed literature. The estimates will be updated as better data and techniques become available. Feedback is welcome at [FiscalRisk@imf.org](mailto:FiscalRisk@imf.org) and [FADM1AST@imf.org](mailto:FADM1AST@imf.org).
+
+The remainder of this documentation provides a functional overview, an illustrative example, and a detailed explanation of the methodology that underpins Q‑CRAFT.
+
+For correctness evidence, see [Excel parity validation](03-excel-parity-validation.qmd), which summarizes the exported-library differential test against the source workbook.

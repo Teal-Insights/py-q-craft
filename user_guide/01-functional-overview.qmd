@@ -1,0 +1,95 @@
+---
+title: "Functional Overview"
+---
+
+Q-CRAFT generates long-term fiscal projections under different climate scenarios using publicly available data. With the Python API, you configure scenarios through setter functions and retrieve results through compute functions, all managed by an evaluation context.
+
+## Setting Up the Baseline Scenario
+
+The baseline scenario is configured with a series of setter calls. After each call, the context is updated, and subsequent computations reflect the chosen parameters.
+
+1. **Country** – `set_country(ctx, 'Afghanistan')`
+2. **Demographic scenario** – `set_demography_scenario(ctx, 'Medium')`
+3. **Productivity growth** – `set_productivity_start(ctx, 5.0)` and `set_productivity_end(ctx, 1.2)`
+4. **Inflation** – `set_inflation_start(ctx, 3.5)` and `set_inflation_end(ctx, 3.5)`
+5. **Interest rate mode** – `set_interest_rate_mode(ctx, 'Nominal interest rate')`
+6. **Real interest rate** – `set_real_interest_rate(ctx, 1.0)`
+7. **Fiscal rule** – `set_fiscal_rule_enabled(ctx, 'No')` and `set_debt_target(ctx, 0.0)`
+
+After the setup, compute baseline outputs with functions like `compute_baseline_debt_to_gdp`, `compute_baseline_primary_balance_pct_gdp`, etc.
+
+```{python}
+import polars as pl
+from qcraft.api import (
+    make_context,
+    set_country,
+    set_demography_scenario,
+    set_productivity_start,
+    set_productivity_end,
+    set_inflation_start,
+    set_inflation_end,
+    set_interest_rate_mode,
+    set_real_interest_rate,
+    set_fiscal_rule_enabled,
+    set_debt_target,
+    compute_baseline_debt_to_gdp,
+)
+
+ctx = make_context()
+
+set_country(ctx, 'Afghanistan')
+set_demography_scenario(ctx, 'Medium')
+set_productivity_start(ctx, 5.0)
+set_productivity_end(ctx, 1.2)
+set_inflation_start(ctx, 3.5)
+set_inflation_end(ctx, 3.5)
+set_interest_rate_mode(ctx, 'Nominal interest rate')
+set_real_interest_rate(ctx, 1.0)
+set_fiscal_rule_enabled(ctx, 'No')
+set_debt_target(ctx, 0.0)
+
+debt_records = compute_baseline_debt_to_gdp(ctx=ctx)
+pl.DataFrame(debt_records).sort("TIME_PERIOD").select(
+    "TIME_PERIOD",
+    pl.col("OBS_VALUE").alias("Debt (% GDP)")
+).head(5)
+```
+
+## Generating Climate Scenarios
+
+Q-CRAFT simulates six climate scenarios: **Paris**, **Moderate**, **High**, **Hot**, **Hot adapted**, and **Hot unadapted**. The expenditure rigidity parameter controls how primary expenditure reacts to climate‑induced GDP losses. Set it with `set_expenditure_rigidity(ctx, 1.0)` (fully rigid) or a value between 0 and 1.
+
+Discrete fiscal risks (natural disasters, etc.) can be registered as revenue and expenditure shocks using `set_discrete_revenue_shocks` and `set_discrete_primary_expenditure_shocks`. These functions accept a list of records, each with `SCENARIO`, `TIME_PERIOD`, and `OBS_VALUE` (percent of GDP). For example:
+
+```{python}
+from qcraft.api import (
+    set_expenditure_rigidity,
+    set_discrete_revenue_shocks,
+    set_discrete_primary_expenditure_shocks,
+)
+
+set_expenditure_rigidity(ctx, 1.0)
+
+set_discrete_revenue_shocks(ctx, [
+    {'SCENARIO': 'Paris', 'TIME_PERIOD': 2030, 'OBS_VALUE': None},
+    {'SCENARIO': 'Paris', 'TIME_PERIOD': 2031, 'OBS_VALUE': 0.5},
+])
+
+set_discrete_primary_expenditure_shocks(ctx, [
+    {'SCENARIO': 'Paris', 'TIME_PERIOD': 2030, 'OBS_VALUE': 0.5},
+    {'SCENARIO': 'Paris', 'TIME_PERIOD': 2031, 'OBS_VALUE': None},
+])
+```
+
+Then compute scenario outputs across all six paths with matrix‑returning functions:
+
+```{python}
+from qcraft.api import compute_scenario_debt_to_gdp
+
+scenario_debt = compute_scenario_debt_to_gdp(ctx=ctx)
+pl.DataFrame(scenario_debt).sort(["SCENARIO", "TIME_PERIOD"]).select(
+    "SCENARIO", "TIME_PERIOD", pl.col("OBS_VALUE").alias("Debt (% GDP)")
+).filter(pl.col("TIME_PERIOD") >= 2050).head(10)
+```
+
+Similar compute functions exist for primary balance (`compute_scenario_primary_balance_pct_gdp`), overall balance (`compute_scenario_overall_balance_pct_gdp`), and many other aggregates, enabling full comparison of climate impacts on fiscal sustainability.

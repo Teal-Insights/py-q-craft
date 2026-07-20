@@ -1,0 +1,27 @@
+Parity report: exported Q-CRAFT standalone library vs Excel
+Generated: 2026-07-20T00:34:40+00:00
+Workbook:  C:\Users\chris\Software\qcraft-extraction-pipeline\data\qcraft-toolv10.xlsx
+Package:   C:\Users\chris\Software\qcraft-extraction-pipeline\dist\qcraft (imported as dist.qcraft.api)
+Tolerance: atol = 1e-06
+
+PARITY (extraction agreement with Excel, including matched errors)
+Total comparisons: 3468
+Passed:            612
+Failed:            2856
+Pass rate:         17.65%
+Acceptance bar:    100.00%
+Result:            FAIL
+
+HEALTH (both sides numeric; matched errors excluded)
+Healthy:           612
+Matched errors:    0
+Health rate:       17.65%
+Health result:     WARN
+
+First divergence:
+  scenario:  canonical
+  cell:      Baseline!P22  (baseline_primary_balance[2021])
+  excel:     '<exception: XlErrorException: #VALUE!>'
+  mvp:       '<exception: XlErrorException: #VALUE!>'
+  abs_diff:  None
+  rel_diff:  None

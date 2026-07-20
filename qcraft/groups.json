@@ -1,0 +1,6720 @@
+{
+  "groups": [
+    {
+      "label": "setup",
+      "path": [
+        "setup"
+      ],
+      "slug": "setup",
+      "members": [
+        {
+          "id": "country",
+          "setter": "set_country",
+          "reader": "read_country",
+          "compute": null,
+          "order": 1
+        },
+        {
+          "id": "demography_scenario",
+          "setter": "set_demography_scenario",
+          "reader": "read_demography_scenario",
+          "compute": null,
+          "order": 2
+        },
+        {
+          "id": "productivity_start",
+          "setter": "set_productivity_start",
+          "reader": "read_productivity_start",
+          "compute": null,
+          "order": 3
+        },
+        {
+          "id": "productivity_end",
+          "setter": "set_productivity_end",
+          "reader": "read_productivity_end",
+          "compute": null,
+          "order": 4
+        },
+        {
+          "id": "inflation_start",
+          "setter": "set_inflation_start",
+          "reader": "read_inflation_start",
+          "compute": null,
+          "order": 5
+        },
+        {
+          "id": "inflation_end",
+          "setter": "set_inflation_end",
+          "reader": "read_inflation_end",
+          "compute": null,
+          "order": 6
+        },
+        {
+          "id": "interest_rate_mode",
+          "setter": "set_interest_rate_mode",
+          "reader": "read_interest_rate_mode",
+          "compute": null,
+          "order": 7
+        },
+        {
+          "id": "real_interest_rate",
+          "setter": "set_real_interest_rate",
+          "reader": "read_real_interest_rate",
+          "compute": null,
+          "order": 8
+        },
+        {
+          "id": "fiscal_rule_enabled",
+          "setter": "set_fiscal_rule_enabled",
+          "reader": "read_fiscal_rule_enabled",
+          "compute": null,
+          "order": 9
+        },
+        {
+          "id": "debt_target",
+          "setter": "set_debt_target",
+          "reader": "read_debt_target",
+          "compute": null,
+          "order": 10
+        }
+      ],
+      "children": []
+    },
+    {
+      "label": "climate",
+      "path": [
+        "climate"
+      ],
+      "slug": "climate",
+      "members": [
+        {
+          "id": "expenditure_rigidity",
+          "setter": "set_expenditure_rigidity",
+          "reader": "read_expenditure_rigidity",
+          "compute": null,
+          "order": 1
+        }
+      ],
+      "children": []
+    },
+    {
+      "label": "discrete_risks",
+      "path": [
+        "discrete_risks"
+      ],
+      "slug": "discrete_risks",
+      "members": [
+        {
+          "id": "discrete_revenue_shocks",
+          "setter": "set_discrete_revenue_shocks",
+          "reader": "read_discrete_revenue_shocks",
+          "compute": null,
+          "order": 1
+        },
+        {
+          "id": "discrete_primary_expenditure_shocks",
+          "setter": "set_discrete_primary_expenditure_shocks",
+          "reader": "read_discrete_primary_expenditure_shocks",
+          "compute": null,
+          "order": 2
+        }
+      ],
+      "children": []
+    },
+    {
+      "label": "baseline_outputs",
+      "path": [
+        "baseline_outputs"
+      ],
+      "slug": "baseline_outputs",
+      "members": [
+        {
+          "id": "baseline_primary_expenditure_pct_gdp",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_primary_expenditure_pct_gdp",
+          "order": 1
+        },
+        {
+          "id": "baseline_interest_expenditure_pct_gdp",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_interest_expenditure_pct_gdp",
+          "order": 2
+        },
+        {
+          "id": "baseline_interest_rate",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_interest_rate",
+          "order": 3
+        },
+        {
+          "id": "baseline_primary_balance_pct_gdp",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_primary_balance_pct_gdp",
+          "order": 4
+        },
+        {
+          "id": "baseline_overall_balance_pct_gdp",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_overall_balance_pct_gdp",
+          "order": 5
+        },
+        {
+          "id": "baseline_debt_to_gdp",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_debt_to_gdp",
+          "order": 6
+        },
+        {
+          "id": "baseline_debt_stabilizing_primary_balance",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_debt_stabilizing_primary_balance",
+          "order": 7
+        },
+        {
+          "id": "baseline_fiscal_consolidation_gap",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_fiscal_consolidation_gap",
+          "order": 8
+        },
+        {
+          "id": "baseline_nominal_gdp_growth",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_nominal_gdp_growth",
+          "order": 9
+        },
+        {
+          "id": "baseline_real_gdp_growth",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_real_gdp_growth",
+          "order": 10
+        },
+        {
+          "id": "baseline_revenue_pct_gdp",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_revenue_pct_gdp",
+          "order": 11
+        },
+        {
+          "id": "baseline_employment_growth",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_employment_growth",
+          "order": 12
+        },
+        {
+          "id": "baseline_labour_productivity_growth",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_labour_productivity_growth",
+          "order": 13
+        },
+        {
+          "id": "baseline_gdp_deflator_growth",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_gdp_deflator_growth",
+          "order": 14
+        },
+        {
+          "id": "baseline_population_growth",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_baseline_population_growth",
+          "order": 15
+        }
+      ],
+      "children": []
+    },
+    {
+      "label": "scenario_outputs",
+      "path": [
+        "scenario_outputs"
+      ],
+      "slug": "scenario_outputs",
+      "members": [
+        {
+          "id": "scenario_primary_balance_pct_gdp",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_primary_balance_pct_gdp",
+          "order": 1
+        },
+        {
+          "id": "scenario_overall_balance_pct_gdp",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_overall_balance_pct_gdp",
+          "order": 2
+        },
+        {
+          "id": "scenario_debt_to_gdp",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_debt_to_gdp",
+          "order": 3
+        },
+        {
+          "id": "scenario_debt_stabilizing_primary_balance_paris",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_debt_stabilizing_primary_balance",
+          "order": 4
+        },
+        {
+          "id": "scenario_debt_stabilizing_primary_balance_moderate",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_debt_stabilizing_primary_balance",
+          "order": 5
+        },
+        {
+          "id": "scenario_debt_stabilizing_primary_balance_high",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_debt_stabilizing_primary_balance",
+          "order": 6
+        },
+        {
+          "id": "scenario_debt_stabilizing_primary_balance_hot",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_debt_stabilizing_primary_balance",
+          "order": 7
+        },
+        {
+          "id": "scenario_debt_stabilizing_primary_balance_hot_adapted",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_debt_stabilizing_primary_balance",
+          "order": 8
+        },
+        {
+          "id": "scenario_debt_stabilizing_primary_balance_hot_unadapted",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_debt_stabilizing_primary_balance",
+          "order": 9
+        },
+        {
+          "id": "scenario_nominal_gdp_growth_paris",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_nominal_gdp_growth",
+          "order": 10
+        },
+        {
+          "id": "scenario_nominal_gdp_growth_moderate",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_nominal_gdp_growth",
+          "order": 11
+        },
+        {
+          "id": "scenario_nominal_gdp_growth_high",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_nominal_gdp_growth",
+          "order": 12
+        },
+        {
+          "id": "scenario_nominal_gdp_growth_hot",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_nominal_gdp_growth",
+          "order": 13
+        },
+        {
+          "id": "scenario_nominal_gdp_growth_hot_adapted",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_nominal_gdp_growth",
+          "order": 14
+        },
+        {
+          "id": "scenario_nominal_gdp_growth_hot_unadapted",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_nominal_gdp_growth",
+          "order": 15
+        },
+        {
+          "id": "scenario_primary_expenditure_pct_gdp_paris",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_primary_expenditure_pct_gdp",
+          "order": 16
+        },
+        {
+          "id": "scenario_primary_expenditure_pct_gdp_moderate",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_primary_expenditure_pct_gdp",
+          "order": 17
+        },
+        {
+          "id": "scenario_primary_expenditure_pct_gdp_high",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_primary_expenditure_pct_gdp",
+          "order": 18
+        },
+        {
+          "id": "scenario_primary_expenditure_pct_gdp_hot",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_primary_expenditure_pct_gdp",
+          "order": 19
+        },
+        {
+          "id": "scenario_primary_expenditure_pct_gdp_hot_adapted",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_primary_expenditure_pct_gdp",
+          "order": 20
+        },
+        {
+          "id": "scenario_primary_expenditure_pct_gdp_hot_unadapted",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_primary_expenditure_pct_gdp",
+          "order": 21
+        },
+        {
+          "id": "scenario_interest_expenditure_pct_gdp_paris",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_interest_expenditure_pct_gdp",
+          "order": 22
+        },
+        {
+          "id": "scenario_interest_expenditure_pct_gdp_moderate",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_interest_expenditure_pct_gdp",
+          "order": 23
+        },
+        {
+          "id": "scenario_interest_expenditure_pct_gdp_high",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_interest_expenditure_pct_gdp",
+          "order": 24
+        },
+        {
+          "id": "scenario_interest_expenditure_pct_gdp_hot",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_interest_expenditure_pct_gdp",
+          "order": 25
+        },
+        {
+          "id": "scenario_interest_expenditure_pct_gdp_hot_adapted",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_interest_expenditure_pct_gdp",
+          "order": 26
+        },
+        {
+          "id": "scenario_interest_expenditure_pct_gdp_hot_unadapted",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_interest_expenditure_pct_gdp",
+          "order": 27
+        },
+        {
+          "id": "scenario_real_gdp_level_index_paris",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_real_gdp_level_index",
+          "order": 28
+        },
+        {
+          "id": "scenario_real_gdp_level_index_moderate",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_real_gdp_level_index",
+          "order": 29
+        },
+        {
+          "id": "scenario_real_gdp_level_index_high",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_real_gdp_level_index",
+          "order": 30
+        },
+        {
+          "id": "scenario_real_gdp_level_index_hot",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_real_gdp_level_index",
+          "order": 31
+        },
+        {
+          "id": "scenario_real_gdp_level_index_hot_adapted",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_real_gdp_level_index",
+          "order": 32
+        },
+        {
+          "id": "scenario_real_gdp_level_index_hot_unadapted",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_real_gdp_level_index",
+          "order": 33
+        },
+        {
+          "id": "scenario_fiscal_consolidation_gap_milestones_2050",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_fiscal_consolidation_gap",
+          "order": 34
+        },
+        {
+          "id": "scenario_fiscal_consolidation_gap_milestones_2075",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_fiscal_consolidation_gap",
+          "order": 35
+        },
+        {
+          "id": "scenario_fiscal_consolidation_gap_milestones_2099",
+          "setter": null,
+          "reader": null,
+          "compute": "compute_scenario_fiscal_consolidation_gap",
+          "order": 36
+        }
+      ],
+      "children": []
+    }
+  ],
+  "ungrouped": [
+    {
+      "id": "baseline_engine_working_age_population",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_total_population",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_real_gdp_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_nominal_gdp_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_revenue_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_primary_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_overall_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_interest_expenditure_pct_revenue",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2009",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2010",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2011",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2012",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2013",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2014",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2015",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2016",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2017",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2018",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2019",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2020",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2021",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2022",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2023",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2024",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2025",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2026",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2027",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2028",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2029",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2030",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2031",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2032",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2033",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2034",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2035",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2036",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2037",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2038",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2039",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2040",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2041",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2042",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2043",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2044",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2045",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2046",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2047",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2048",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2049",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2050",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2051",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2052",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2053",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2054",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2055",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2056",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2057",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2058",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2059",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2060",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2061",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2062",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2063",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2064",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2065",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2066",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2067",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2068",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2069",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2070",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2071",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2072",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2073",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2074",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2075",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2076",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2077",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2078",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2079",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2080",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2081",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2082",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2083",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2084",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2085",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2086",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2087",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2088",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2089",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2090",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2091",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2092",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2093",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2094",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2095",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2096",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2097",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2098",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_engine_indicators_2099",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_fiscal_rule_flag",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_debt_target_above",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "baseline_debt_target_below",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_employment_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_labour_productivity_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_real_gdp_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_gdp_deflator_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_nominal_gdp_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_revenue_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_revenue_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_primary_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_overall_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_weighted_interest_rate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_interest_expenditure_pct_revenue",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_discrete_risk_revenue_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_discrete_risk_expenditure_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_memo_primary_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_memo_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_memo_gross_debt_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_baseline_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_primary_expenditure_baseline_share_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_recalibration_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2009",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2010",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2011",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2012",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2013",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2014",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2015",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2016",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2017",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2018",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2019",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2020",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2021",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2022",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2023",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2024",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2025",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2026",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2027",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2028",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2029",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2030",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2031",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2032",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2033",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2034",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2035",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2036",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2037",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2038",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2039",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2040",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2041",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2042",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2043",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2044",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2045",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2046",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2047",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2048",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2049",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2050",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2051",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2052",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2053",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2054",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2055",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2056",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2057",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2058",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2059",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2060",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2061",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2062",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2063",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2064",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2065",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2066",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2067",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2068",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2069",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2070",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2071",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2072",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2073",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2074",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2075",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2076",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2077",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2078",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2079",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2080",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2081",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2082",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2083",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2084",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2085",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2086",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2087",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2088",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2089",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2090",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2091",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2092",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2093",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2094",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2095",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2096",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2097",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2098",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "paris_engine_indicators_2099",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_employment_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_labour_productivity_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_real_gdp_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_gdp_deflator_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_nominal_gdp_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_revenue_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_revenue_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_primary_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_overall_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_weighted_interest_rate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_interest_expenditure_pct_revenue",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_discrete_risk_revenue_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_discrete_risk_expenditure_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_memo_primary_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_memo_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_memo_gross_debt_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_baseline_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_primary_expenditure_baseline_share_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_recalibration_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2009",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2010",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2011",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2012",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2013",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2014",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2015",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2016",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2017",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2018",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2019",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2020",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2021",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2022",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2023",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2024",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2025",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2026",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2027",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2028",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2029",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2030",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2031",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2032",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2033",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2034",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2035",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2036",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2037",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2038",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2039",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2040",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2041",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2042",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2043",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2044",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2045",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2046",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2047",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2048",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2049",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2050",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2051",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2052",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2053",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2054",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2055",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2056",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2057",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2058",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2059",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2060",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2061",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2062",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2063",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2064",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2065",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2066",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2067",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2068",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2069",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2070",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2071",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2072",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2073",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2074",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2075",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2076",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2077",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2078",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2079",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2080",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2081",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2082",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2083",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2084",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2085",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2086",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2087",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2088",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2089",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2090",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2091",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2092",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2093",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2094",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2095",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2096",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2097",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2098",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "moderate_engine_indicators_2099",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_employment_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_labour_productivity_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_real_gdp_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_gdp_deflator_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_nominal_gdp_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_revenue_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_revenue_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_primary_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_overall_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_weighted_interest_rate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_interest_expenditure_pct_revenue",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_discrete_risk_revenue_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_discrete_risk_expenditure_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_memo_primary_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_memo_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_memo_gross_debt_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_baseline_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_primary_expenditure_baseline_share_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_recalibration_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2009",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2010",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2011",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2012",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2013",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2014",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2015",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2016",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2017",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2018",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2019",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2020",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2021",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2022",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2023",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2024",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2025",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2026",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2027",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2028",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2029",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2030",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2031",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2032",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2033",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2034",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2035",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2036",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2037",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2038",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2039",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2040",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2041",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2042",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2043",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2044",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2045",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2046",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2047",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2048",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2049",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2050",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2051",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2052",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2053",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2054",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2055",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2056",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2057",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2058",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2059",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2060",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2061",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2062",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2063",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2064",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2065",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2066",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2067",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2068",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2069",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2070",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2071",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2072",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2073",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2074",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2075",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2076",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2077",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2078",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2079",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2080",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2081",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2082",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2083",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2084",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2085",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2086",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2087",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2088",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2089",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2090",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2091",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2092",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2093",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2094",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2095",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2096",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2097",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2098",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "high_engine_indicators_2099",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_employment_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_labour_productivity_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_real_gdp_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_gdp_deflator_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_nominal_gdp_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_revenue_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_revenue_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_primary_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_overall_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_weighted_interest_rate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_interest_expenditure_pct_revenue",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_discrete_risk_revenue_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_discrete_risk_expenditure_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_memo_primary_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_memo_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_memo_gross_debt_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_baseline_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_primary_expenditure_baseline_share_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_recalibration_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2009",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2010",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2011",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2012",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2013",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2014",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2015",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2016",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2017",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2018",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2019",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2020",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2021",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2022",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2023",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2024",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2025",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2026",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2027",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2028",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2029",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2030",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2031",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2032",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2033",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2034",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2035",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2036",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2037",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2038",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2039",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2040",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2041",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2042",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2043",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2044",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2045",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2046",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2047",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2048",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2049",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2050",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2051",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2052",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2053",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2054",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2055",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2056",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2057",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2058",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2059",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2060",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2061",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2062",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2063",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2064",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2065",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2066",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2067",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2068",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2069",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2070",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2071",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2072",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2073",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2074",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2075",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2076",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2077",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2078",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2079",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2080",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2081",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2082",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2083",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2084",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2085",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2086",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2087",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2088",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2089",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2090",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2091",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2092",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2093",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2094",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2095",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2096",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2097",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2098",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_engine_indicators_2099",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_employment_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_labour_productivity_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_real_gdp_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_gdp_deflator_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_nominal_gdp_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_revenue_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_revenue_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_primary_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_overall_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_weighted_interest_rate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_interest_expenditure_pct_revenue",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_discrete_risk_revenue_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_discrete_risk_expenditure_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_memo_primary_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_memo_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_memo_gross_debt_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_baseline_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_primary_expenditure_baseline_share_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_recalibration_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2009",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2010",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2011",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2012",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2013",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2014",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2015",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2016",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2017",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2018",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2019",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2020",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2021",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2022",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2023",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2024",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2025",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2026",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2027",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2028",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2029",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2030",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2031",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2032",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2033",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2034",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2035",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2036",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2037",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2038",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2039",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2040",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2041",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2042",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2043",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2044",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2045",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2046",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2047",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2048",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2049",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2050",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2051",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2052",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2053",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2054",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2055",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2056",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2057",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2058",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2059",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2060",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2061",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2062",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2063",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2064",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2065",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2066",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2067",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2068",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2069",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2070",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2071",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2072",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2073",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2074",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2075",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2076",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2077",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2078",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2079",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2080",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2081",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2082",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2083",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2084",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2085",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2086",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2087",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2088",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2089",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2090",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2091",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2092",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2093",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2094",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2095",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2096",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2097",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2098",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_adapted_engine_indicators_2099",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_employment_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_labour_productivity_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_real_gdp_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_gdp_deflator_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_nominal_gdp_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_revenue_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_revenue_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_primary_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_overall_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_weighted_interest_rate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_interest_expenditure_pct_revenue",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_discrete_risk_revenue_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_discrete_risk_expenditure_shock",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_memo_primary_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_memo_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_memo_gross_debt_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_baseline_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_primary_expenditure_baseline_share_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_recalibration_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2009",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2010",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2011",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2012",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2013",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2014",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2015",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2016",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2017",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2018",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2019",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2020",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2021",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2022",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2023",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2024",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2025",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2026",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2027",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2028",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2029",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2030",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2031",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2032",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2033",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2034",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2035",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2036",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2037",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2038",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2039",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2040",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2041",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2042",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2043",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2044",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2045",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2046",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2047",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2048",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2049",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2050",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2051",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2052",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2053",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2054",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2055",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2056",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2057",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2058",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2059",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2060",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2061",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2062",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2063",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2064",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2065",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2066",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2067",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2068",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2069",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2070",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2071",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2072",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2073",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2074",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2075",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2076",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2077",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2078",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2079",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2080",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2081",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2082",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2083",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2084",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2085",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2086",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2087",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2088",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2089",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2090",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2091",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2092",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2093",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2094",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2095",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2096",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2097",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2098",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "hot_unadapted_engine_indicators_2099",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_primary_expenditure_pct_gdp_summary",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_interest_expenditure_pct_gdp_summary",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_interest_rate_summary",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_primary_balance_pct_gdp_summary",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_overall_balance_pct_gdp_summary",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_debt_to_gdp_summary",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_dspb_milestones",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_primary_expenditure_pct_gdp_path",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_interest_expenditure_pct_gdp_path",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_interest_rate_path",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_primary_balance_pct_gdp_path",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_overall_balance_pct_gdp_path",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_baseline_debt_to_gdp_path",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_primary_balance_pct_gdp_summary_baseline",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_primary_balance_pct_gdp_summary_paris",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_primary_balance_pct_gdp_summary_moderate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_primary_balance_pct_gdp_summary_high",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_primary_balance_pct_gdp_summary_hot",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_primary_balance_pct_gdp_summary_hot_adapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_primary_balance_pct_gdp_summary_hot_unadapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_debt_to_gdp_summary_baseline",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_debt_to_gdp_summary_paris",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_debt_to_gdp_summary_moderate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_debt_to_gdp_summary_high",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_debt_to_gdp_summary_hot",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_debt_to_gdp_summary_hot_adapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_debt_to_gdp_summary_hot_unadapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_dspb_milestones_baseline",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_dspb_milestones_paris",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_dspb_milestones_moderate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_dspb_milestones_high",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_dspb_milestones_hot",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_dspb_milestones_hot_adapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_dspb_milestones_hot_unadapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_primary_balance_pct_gdp_baseline_path",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_overall_balance_pct_gdp_baseline_path",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "output_scenarios_debt_to_gdp_baseline_path",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_country",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_real_gdp_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_nominal_gdp_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_gdp_deflator",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_revenue_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_overall_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_primary_balance_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_debt_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_interest_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_primary_expenditure_lcu",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_real_gdp_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_nominal_gdp_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_gdp_deflator_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_revenue_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_primary_expenditure_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_interest_rate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_debt_to_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_overall_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_primary_balance_pct_gdp",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "macrofiscal_interest_growth_differential",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "demography_country",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "demography_scenario_flag",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "demography_working_age_population",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "demography_total_population",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "demography_working_age_population_medium",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "demography_working_age_population_high",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "demography_working_age_population_low",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "demography_total_population_medium",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "demography_total_population_high",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "demography_total_population_low",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "productivity_country",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "productivity_start_flag",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "productivity_end_flag",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "productivity_level",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "productivity_growth",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "productivity_convergence_trajectory",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "inflation_start_flag",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "inflation_end_flag",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "inflation_path",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "inflation_convergence_trajectory",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "interest_rate_mode_flag",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "interest_rate_end_of_mtff",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "interest_growth_differential_end_of_mtff",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "interest_rate_long_run_real_rate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "interest_rate_nominal_interest_rate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "interest_rate_nominal_gdp_growth_baseline",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "interest_rate_inflation_baseline",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "interest_rate_long_run_assumption",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "interest_rate_long_run_nominal_interest_rate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "interest_rate_long_run_interest_growth_differential",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "interest_rate_long_run_real_interest_rate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_country",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_loss_pct_paris",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_loss_pct_moderate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_loss_pct_high",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_loss_pct_hot",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_loss_pct_hot_adapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_loss_pct_hot_unadapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_index_paris",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_index_moderate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_index_high",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_index_hot",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_index_hot_adapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_gdp_index_hot_unadapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_labour_productivity_growth_variation_paris",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_labour_productivity_growth_variation_moderate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_labour_productivity_growth_variation_high",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_labour_productivity_growth_variation_hot",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_labour_productivity_growth_variation_hot_adapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_database_labour_productivity_growth_variation_hot_unadapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_data_labour_productivity_growth_variation_paris",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_data_labour_productivity_growth_variation_moderate",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_data_labour_productivity_growth_variation_high",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_data_labour_productivity_growth_variation_hot",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_data_labour_productivity_growth_variation_hot_adapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    },
+    {
+      "id": "climate_data_labour_productivity_growth_variation_hot_unadapted",
+      "setter": null,
+      "reader": null,
+      "compute": null,
+      "order": null
+    }
+  ]
+}

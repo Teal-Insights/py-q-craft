@@ -1,0 +1,153 @@
+---
+title: "Illustrative example"
+---
+
+### Baseline Scenario
+
+We first configure France’s macroeconomic framework on the Dashboard sheet through the API. The following assumptions define the baseline:
+
+- Medium UN demographic variant,
+- a labour‑productivity growth path that starts at 5.0% and converges to 1.2%,
+- a constant inflation rate of 3.5% (both start and end),
+- a nominal‑interest‑rate mode for projecting government interest,
+- a real interest rate of 1.0%,
+- an active fiscal rule with a 60% of GDP debt target,
+- full expenditure rigidity (coefficient 1.0), and
+- no discrete fiscal risks.
+
+These choices are written into the context with the `set_*` functions, passing bare scalars for single‑cell inputs.
+
+```{python}
+import polars as pl
+import matplotlib.pyplot as plt
+
+from qcraft.api import (
+    make_context,
+    set_country,
+    set_demography_scenario,
+    set_productivity_start,
+    set_productivity_end,
+    set_inflation_start,
+    set_inflation_end,
+    set_interest_rate_mode,
+    set_real_interest_rate,
+    set_fiscal_rule_enabled,
+    set_debt_target,
+    set_expenditure_rigidity,
+    set_discrete_revenue_shocks,
+    set_discrete_primary_expenditure_shocks,
+    compute_baseline_nominal_gdp_growth,
+    compute_baseline_debt_to_gdp,
+    compute_baseline_primary_balance_pct_gdp,
+    compute_scenario_debt_to_gdp,
+    compute_scenario_real_gdp_level_index,
+)
+
+def results_frame(records):
+    return (
+        pl.DataFrame(records)
+        .sort("TIME_PERIOD")
+        .select(
+            "TIME_PERIOD",
+            pl.col("OBS_VALUE").alias("Value"),
+        )
+    )
+
+ctx = make_context()
+set_country(ctx, "France")
+set_demography_scenario(ctx, "Medium")
+set_productivity_start(ctx, 5.0)
+set_productivity_end(ctx, 1.2)
+set_inflation_start(ctx, 3.5)
+set_inflation_end(ctx, 3.5)
+set_interest_rate_mode(ctx, "Nominal interest rate")
+set_real_interest_rate(ctx, 1.0)
+set_fiscal_rule_enabled(ctx, "Yes")
+set_debt_target(ctx, 60.0)
+set_expenditure_rigidity(ctx, 1.0)
+```
+
+With the baseline inputs set, we can retrieve the key output series. The `compute_*` functions return lists of records that we tabulate and plot.
+
+```{python}
+# Baseline nominal GDP growth
+baseline_growth = results_frame(compute_baseline_nominal_gdp_growth(ctx=ctx))
+# Baseline debt‑to‑GDP
+baseline_debt = results_frame(compute_baseline_debt_to_gdp(ctx=ctx))
+```
+
+### Climate Scenarios
+
+The tool automatically projects outcomes under six climate‑change pathways. To explore the worst‑case (Hot unadapted), we simply query the corresponding scenario outputs. No additional configuration is needed – the impact of climate on GDP and other variables is driven by the built‑in damage functions and the dashboard’s expenditure‑rigidity setting.
+
+```{python}
+# Debt‑to‑GDP under Hot unadapted
+hot_unadapted_debt = (
+    pl.DataFrame(compute_scenario_debt_to_gdp(ctx=ctx))
+    .filter(pl.col("SCENARIO") == "Hot unadapted")
+    .sort("TIME_PERIOD")
+    .select("TIME_PERIOD", pl.col("OBS_VALUE").alias("Debt/GDP"))
+)
+
+# Real GDP level index (Hot unadapted)
+hot_unadapted_gdp_idx = (
+    pl.DataFrame(compute_scenario_real_gdp_level_index(ctx=ctx))
+    .filter(pl.col("SCENARIO") == "Hot unadapted")
+    .sort("TIME_PERIOD")
+    .select("TIME_PERIOD", pl.col("OBS_VALUE").alias("GDP Index"))
+)
+```
+
+The decline in economic activity and the rigidities in spending translate into a markedly higher debt‑to‑GDP trajectory. The following chart contrasts the baseline and climate‑stressed paths.
+
+```{python}
+fig, ax = plt.subplots()
+timeline = baseline_debt["TIME_PERIOD"].to_list()
+ax.plot(timeline, baseline_debt["Value"].to_list(), label="Baseline")
+hot_timeline = hot_unadapted_debt["TIME_PERIOD"].to_list()
+ax.plot(hot_timeline, hot_unadapted_debt["Debt/GDP"].to_list(), label="Hot unadapted")
+ax.set_xlabel("Year")
+ax.set_ylabel("Debt‑to‑GDP (%)")
+ax.set_title("Debt Trajectories")
+ax.legend()
+plt.show()
+```
+
+### Discrete Fiscal Risks
+
+Natural‑disaster events that become more frequent under climate change can be expressed as one‑off shocks to revenue and primary expenditure. These are registered through `set_discrete_revenue_shocks` and `set_discrete_primary_expenditure_shocks`, which accept lists of records keyed by `SCENARIO` and `TIME_PERIOD`. Once applied, the shocks alter the scenario projections from their occurrence onward.
+
+```{python}
+# Register a revenue hit and an expenditure surge for Hot unadapted (matrix years)
+discrete_rev = [
+    {"SCENARIO": "Hot unadapted", "TIME_PERIOD": 2050, "OBS_VALUE": -2.5},
+]
+discrete_exp = [
+    {"SCENARIO": "Hot unadapted", "TIME_PERIOD": 2050, "OBS_VALUE": 3.0},
+]
+
+set_discrete_revenue_shocks(ctx, discrete_rev)
+set_discrete_primary_expenditure_shocks(ctx, discrete_exp)
+```
+
+Re‑computing the scenario debt ratio now incorporates the lasting fiscal footprint of these events.
+
+```{python}
+# Updated debt‑to‑GDP for Hot unadapted with discrete risks
+hot_risk_debt = (
+    pl.DataFrame(compute_scenario_debt_to_gdp(ctx=ctx))
+    .filter(pl.col("SCENARIO") == "Hot unadapted")
+    .sort("TIME_PERIOD")
+    .select("TIME_PERIOD", pl.col("OBS_VALUE").alias("Debt/GDP"))
+)
+
+fig, ax = plt.subplots()
+ax.plot(timeline, baseline_debt["Value"].to_list(), label="Baseline")
+ax.plot(hot_unadapted_debt["TIME_PERIOD"].to_list(), hot_unadapted_debt["Debt/GDP"].to_list(), label="Hot unadapted (no shocks)")
+ax.plot(hot_risk_debt["TIME_PERIOD"].to_list(), hot_risk_debt["Debt/GDP"].to_list(), label="Hot unadapted + discrete risks")
+ax.set_xlabel("Year")
+ax.set_ylabel("Debt‑to‑GDP (%)")
+ax.set_title("Impact of Discrete Fiscal Risks")
+ax.legend()
+plt.show()
+```
