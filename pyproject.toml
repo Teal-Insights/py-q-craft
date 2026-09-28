@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Python implementation of the IMF Quantitative Climate Risk Assessment Fiscal Tool (workbook vintage 2024-11-15)."
 requires-python = ">=3.13"
 dependencies = [
-    "excel-grapher>=23.7.1",
+    "excel-grapher>=23.10.0",
     "fastpyxl>=1.1.0",
     "numpy",
 ]

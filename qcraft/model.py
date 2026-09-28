@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import Field, dataclass, fields
+from dataclasses import field as _field
 from functools import cached_property
 from pathlib import Path
 from typing import Annotated, Any, ClassVar, Literal, Self
 
 from . import data, internals, validation
-from .runtime import RealBetween
+from .runtime import InputField, RealBetween, describe_inputs
 from .workbook import read_bound_inputs
 
 
@@ -69,6 +70,11 @@ class _SnapshotInputs(_BoundInputs):
             for name in names
         }
         return cls(**values)
+
+    @classmethod
+    def describe(cls) -> dict[str, InputField]:
+        """Axes, keys, value annotation, default, and cells of each field."""
+        return describe_inputs(cls)
 
 
 class Model(_BoundInputs):
@@ -1661,785 +1667,1743 @@ class Model(_BoundInputs):
 class BaselinePrimaryExpenditurePctGdpInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_primary_expenditure_pct_gdp`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineInterestExpenditurePctGdpInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_interest_expenditure_pct_gdp`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineInterestRateInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_interest_rate`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselinePrimaryBalancePctGdpInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_primary_balance_pct_gdp`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineOverallBalancePctGdpInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_overall_balance_pct_gdp`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineDebtToGdpInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_debt_to_gdp`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineDebtStabilizingPrimaryBalanceInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_debt_stabilizing_primary_balance`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineFiscalConsolidationGapInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_fiscal_consolidation_gap`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineNominalGdpGrowthInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_nominal_gdp_growth`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineRealGdpGrowthInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_real_gdp_growth`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineRevenuePctGdpInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_revenue_pct_gdp`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineEmploymentGrowthInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_employment_growth`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineLabourProductivityGrowthInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_labour_productivity_growth`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselineGdpDeflatorGrowthInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_gdp_deflator_growth`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class BaselinePopulationGrowthInputs(_SnapshotInputs):
     """Bound input leaves for `compute_baseline_population_growth`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioPrimaryBalancePctGdpInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_primary_balance_pct_gdp`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioOverallBalancePctGdpInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_overall_balance_pct_gdp`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioDebtToGdpInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_debt_to_gdp`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioDebtStabilizingPrimaryBalanceParisInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_debt_stabilizing_primary_balance_paris`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioDebtStabilizingPrimaryBalanceModerateInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_debt_stabilizing_primary_balance_moderate`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioDebtStabilizingPrimaryBalanceHighInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_debt_stabilizing_primary_balance_high`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioDebtStabilizingPrimaryBalanceHotInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_debt_stabilizing_primary_balance_hot`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioDebtStabilizingPrimaryBalanceHotAdaptedInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_debt_stabilizing_primary_balance_hot_adapted`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioDebtStabilizingPrimaryBalanceHotUnadaptedInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_debt_stabilizing_primary_balance_hot_unadapted`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioNominalGdpGrowthParisInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_nominal_gdp_growth_paris`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioNominalGdpGrowthModerateInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_nominal_gdp_growth_moderate`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioNominalGdpGrowthHighInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_nominal_gdp_growth_high`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioNominalGdpGrowthHotInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_nominal_gdp_growth_hot`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioNominalGdpGrowthHotAdaptedInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_nominal_gdp_growth_hot_adapted`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioNominalGdpGrowthHotUnadaptedInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_nominal_gdp_growth_hot_unadapted`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioPrimaryExpenditurePctGdpParisInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_primary_expenditure_pct_gdp_paris`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioPrimaryExpenditurePctGdpModerateInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_primary_expenditure_pct_gdp_moderate`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioPrimaryExpenditurePctGdpHighInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_primary_expenditure_pct_gdp_high`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioPrimaryExpenditurePctGdpHotInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_primary_expenditure_pct_gdp_hot`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioPrimaryExpenditurePctGdpHotAdaptedInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_primary_expenditure_pct_gdp_hot_adapted`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioPrimaryExpenditurePctGdpHotUnadaptedInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_primary_expenditure_pct_gdp_hot_unadapted`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioInterestExpenditurePctGdpParisInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_interest_expenditure_pct_gdp_paris`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioInterestExpenditurePctGdpModerateInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_interest_expenditure_pct_gdp_moderate`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioInterestExpenditurePctGdpHighInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_interest_expenditure_pct_gdp_high`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioInterestExpenditurePctGdpHotInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_interest_expenditure_pct_gdp_hot`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioInterestExpenditurePctGdpHotAdaptedInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_interest_expenditure_pct_gdp_hot_adapted`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioInterestExpenditurePctGdpHotUnadaptedInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_interest_expenditure_pct_gdp_hot_unadapted`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioRealGdpLevelIndexParisInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_real_gdp_level_index_paris`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioRealGdpLevelIndexModerateInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_real_gdp_level_index_moderate`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioRealGdpLevelIndexHighInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_real_gdp_level_index_high`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioRealGdpLevelIndexHotInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_real_gdp_level_index_hot`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioRealGdpLevelIndexHotAdaptedInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_real_gdp_level_index_hot_adapted`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioRealGdpLevelIndexHotUnadaptedInputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_real_gdp_level_index_hot_unadapted`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioFiscalConsolidationGapMilestones2050Inputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_fiscal_consolidation_gap_milestones_2050`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioFiscalConsolidationGapMilestones2075Inputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_fiscal_consolidation_gap_milestones_2075`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 @dataclass(frozen=True, kw_only=True)
 class ScenarioFiscalConsolidationGapMilestones2099Inputs(_SnapshotInputs):
     """Bound input leaves for `compute_scenario_fiscal_consolidation_gap_milestones_2099`."""
 
-    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"]
-    demography_scenario: Literal["High", "Low", "Medium"]
-    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)]
-    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)]
-    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"]
-    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)]
-    fiscal_rule_enabled: Literal["No", "Yes"]
-    debt_target: Annotated[float, RealBetween(0.0, 300.0)]
-    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)]
-    discrete_revenue_shocks: data.DiscreteRevenueShocks
-    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks
+    country: Literal["C\u00f4te d'Ivoire", "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Costa Rica", "Croatia", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hong Kong SAR", "Hungary", "Iceland", "India", "Indonesia", "Iraq", "Ireland", "Islamic Republic of Iran", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Korea", "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao P.D.R.", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Lithuania", "Luxembourg", "Macao SAR", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo", "Romania", "Russia", "Rwanda", "Samoa", "San Marino", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovak Republic", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "St. Kitts and Nevis", "St. Lucia", "St. Vincent and the Grenadines", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "S\u00e3o Tom\u00e9 and Pr\u00edncipe", "Taiwan Province of China", "Tajikistan", "Tanzania", "Thailand", "The Bahamas", "The Gambia", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkmenistan", "Tuvalu", "T\u00fcrkiye", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "West Bank and Gaza", "Yemen", "Zambia", "Zimbabwe"] = _field(
+        metadata={"default": data.COUNTRY_DEFAULT, "cells": data.COUNTRY_CELLS},
+    )
+    demography_scenario: Literal["High", "Low", "Medium"] = _field(
+        metadata={"default": data.DEMOGRAPHY_SCENARIO_DEFAULT, "cells": data.DEMOGRAPHY_SCENARIO_CELLS},
+    )
+    productivity_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_START_DEFAULT, "cells": data.PRODUCTIVITY_START_CELLS},
+    )
+    productivity_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.PRODUCTIVITY_END_DEFAULT, "cells": data.PRODUCTIVITY_END_CELLS},
+    )
+    inflation_start: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_START_DEFAULT, "cells": data.INFLATION_START_CELLS},
+    )
+    inflation_end: Annotated[float, RealBetween(-100.0, 100.0)] = _field(
+        metadata={"default": data.INFLATION_END_DEFAULT, "cells": data.INFLATION_END_CELLS},
+    )
+    interest_rate_mode: Literal["Interest-growth differential", "Nominal interest rate", "Real interest rate (a)"] = _field(
+        metadata={"default": data.INTEREST_RATE_MODE_DEFAULT, "cells": data.INTEREST_RATE_MODE_CELLS},
+    )
+    real_interest_rate: Annotated[float, RealBetween(-20.0, 20.0)] = _field(
+        metadata={"default": data.REAL_INTEREST_RATE_DEFAULT, "cells": data.REAL_INTEREST_RATE_CELLS},
+    )
+    fiscal_rule_enabled: Literal["No", "Yes"] = _field(
+        metadata={"default": data.FISCAL_RULE_ENABLED_DEFAULT, "cells": data.FISCAL_RULE_ENABLED_CELLS},
+    )
+    debt_target: Annotated[float, RealBetween(0.0, 300.0)] = _field(
+        metadata={"default": data.DEBT_TARGET_DEFAULT, "cells": data.DEBT_TARGET_CELLS},
+    )
+    expenditure_rigidity: Annotated[float, RealBetween(0.0, 1.0)] = _field(
+        metadata={"default": data.EXPENDITURE_RIGIDITY_DEFAULT, "cells": data.EXPENDITURE_RIGIDITY_CELLS},
+    )
+    discrete_revenue_shocks: data.DiscreteRevenueShocks = _field(
+        metadata={"default": data.DISCRETE_REVENUE_SHOCKS_DEFAULT, "cells": data.DISCRETE_REVENUE_SHOCKS.cells},
+    )
+    discrete_primary_expenditure_shocks: data.DiscretePrimaryExpenditureShocks = _field(
+        metadata={"default": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS_DEFAULT, "cells": data.DISCRETE_PRIMARY_EXPENDITURE_SHOCKS.cells},
+    )
 
 
 __all__ = [

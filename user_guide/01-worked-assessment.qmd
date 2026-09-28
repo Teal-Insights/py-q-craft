@@ -4,6 +4,55 @@ title: "A France assessment"
 
 This page runs one assumption set for France and reads the debt ratio. France is a reproducible name. Treat the numbers as an illustration you can defend or replace. The workbook's stored dashboard belongs to Afghanistan, the vintage default country, so this page sets its own assumptions.
 
+## Ask the package what it takes
+
+Every `compute_*` function is typed. It takes one `*Inputs` object and returns a named series, so standard tooling shows the contract:
+
+```{python}
+import inspect
+
+from qcraft.api import compute_scenario_debt_to_gdp
+
+print(inspect.signature(compute_scenario_debt_to_gdp))
+```
+
+Every `*Inputs` class has a `describe()` method. It reports each field's allowed values, its axes and keys, its workbook default, and the worksheet cells that default came from:
+
+```{python}
+from typing import Literal, get_args, get_origin
+
+from qcraft import ScenarioDebtToGdpInputs
+
+fields = ScenarioDebtToGdpInputs.describe()
+
+
+def allowed(values: object) -> str:
+    if get_origin(values) is Literal:
+        choices = get_args(values)
+        return repr(list(choices)) if len(choices) <= 4 else f"{len(choices)} choices"
+    return repr(values).replace("typing.", "")
+
+
+for name, field in fields.items():
+    axes = " x ".join(f"{axis.name}[{len(axis.keys)}]" for axis in field.axes) or "scalar"
+    print(f"{name}: {allowed(field.values)}  [{axes}]")
+```
+
+Eleven fields are scalars. A `Literal` field takes one of the workbook's dropdown strings, matched exactly. An `Annotated[float, RealBetween(...)]` field takes a number inside the bounds. The two shock fields are series over 6 scenarios and 70 years, and each value may be empty (`Optional`). Values outside the domain fail at construction, before any evaluation:
+
+```{python}
+try:
+    ScenarioDebtToGdpInputs.from_defaults(debt_target=400.0)
+except ValueError as error:
+    print(error)
+```
+
+A scalar field's `default` is the vintage value, and `cells` names the dashboard cell it was read from. That is the cell to check when a default looks wrong for your country:
+
+```{python}
+{name: (fields[name].default, fields[name].cells[()]) for name in ("country", "debt_target", "expenditure_rigidity")}
+```
+
 ## State the assumptions
 
 Each choice is doing economic work:
@@ -180,11 +229,44 @@ flexible_debt = compute_scenario_debt_to_gdp(
 
 Under these assumptions the hot unadapted ratio in 2099 falls from about 251 to about 139 when spending moves with GDP. The temperature path supplies the GDP loss. Rigidity decides how much of that loss becomes debt.
 
+## Add a discrete shock
+
+The shock fields are series, so `describe()` is the quickest way to see their shape. The default is empty at every coordinate. Each coordinate is a `(SCENARIO, TIME_PERIOD)` pair that traces to one cell on the `Discrete Risks` sheet:
+
+```{python}
+field = fields["discrete_primary_expenditure_shocks"]
+[axis.name for axis in field.axes], field.default[("Hot unadapted", 2040)], field.cells[("Hot unadapted", 2040)]
+```
+
+Build a new series from the default so it keeps the same axes and cell provenance. Here a one-off expenditure shock of 10 percent of GDP lands in 2040 under every scenario, a stand-in for a large disaster-recovery or contingent-liability cost:
+
+```{python}
+expenditure_shock = field.default.with_records(
+    (coord, 10.0 if coord[1] == 2040 else value)
+    for coord, value in field.default.items()
+)
+shocked_debt = compute_scenario_debt_to_gdp(
+    ScenarioDebtToGdpInputs.from_defaults(
+        **assumptions, discrete_primary_expenditure_shocks=expenditure_shock
+    )
+)
+
+{
+    scenario: {
+        year: (round(debt.sel(SCENARIO=scenario)[year], 1), round(shocked_debt.sel(SCENARIO=scenario)[year], 1))
+        for year in (2039, 2040, 2099)
+    }
+    for scenario in ("Paris", "Hot unadapted")
+}
+```
+
+Each pair is debt without and with the shock. The ratio jumps by the full 10 points in 2040. Under the rule, it drifts back only slowly: by 2099 the gap is about 8 points under Paris and about 9 under Hot unadapted. The shock moves the fiscal aggregates only. It adds no GDP loss.
+
 ## Reuse the call
 
 `from_defaults` fills every leaf from the vintage defaults, then applies the dictionary. Pass the same dictionary into every fiscal call. Growth-only functions take the four-key subset, so the GDP comparison uses the same productivity path. Select a scenario with `.sel(SCENARIO="Paris")`, then a year with `[2099]`.
 
-Replace `"France"` and any value you do not mean to publish. `from_defaults` rejects a keyword the inputs class does not have. When you publish a table, publish `assumptions` with it.
+Replace `"France"` and any value you do not mean to publish. `from_defaults` rejects a keyword the inputs class does not have. Call `describe()` on an inputs class to see which keys it takes before you pass the dictionary. When you publish a table, publish `assumptions` with it.
 
 The [methodology page](02-methodology-and-interpretation.qmd) is where each of
 these results sits in the identities: the fiscal rule, the debt dynamics, and

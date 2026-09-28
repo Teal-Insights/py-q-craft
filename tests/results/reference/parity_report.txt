@@ -1,5 +1,5 @@
 Parity report: exported Q-CRAFT (2024-11-15) standalone library vs FormulaEvaluator
-Generated: 2026-09-23T00:02:53+00:00
+Generated: 2026-09-28T15:26:41+00:00
 Workbook:  C:\Users\chris\Software\qcraft-extraction-pipeline\data\qcraft-toolv10.xlsx
 Package:   C:\Users\chris\Software\qcraft-extraction-pipeline\dist\qcraft (imported as dist.qcraft.api)
 Oracles:   excel-grapher graph + FormulaEvaluator [golden] vs exported package compute_* [mvp]
@@ -10,7 +10,7 @@ Workbook SHA-256: 10c7893a9d93ea49acc1cf3c28a743e8281cb7748f48c4cbe0e2e8cdb10542
 ENVIRONMENT
   Python:  3.13.5
   OS:      Windows-11-10.0.26200-SP0
-  excel-grapher: 23.7.1
+  excel-grapher: 23.10.0
 
 Total comparisons: 366180
 Passed:            366180

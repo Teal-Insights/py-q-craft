@@ -220,5 +220,6 @@ __all__ = [
     "compute_scenario_fiscal_consolidation_gap_milestones_2099",
 ]
 
+from .runtime import InputField
 from .tensor import Axis, Domain, Series, Tensor, TensorSchema
-__all__ += ['Axis', 'Domain', 'Series', 'Tensor', 'TensorSchema']
+__all__ += ['Axis', 'Domain', 'InputField', 'Series', 'Tensor', 'TensorSchema']
