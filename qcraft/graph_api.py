@@ -7,7 +7,8 @@ Recomputes via the exported ``Model`` (default) or excel-grapher's
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from collections.abc import Mapping
+from typing import Any
 
 from . import data
 from .graph_schema import (
@@ -169,14 +170,11 @@ def bind_model_inputs(flat: FlatInputs) -> dict[str, Any]:
 
 
 def available_backends() -> list[BackendName]:
-    backends: list[BackendName] = ["export"]
-    try:
-        from . import graph_formula_evaluator as _fe
+    from . import graph_formula_evaluator as _fe
 
-        if _fe.is_available():
-            backends.append("formula_evaluator")
-    except Exception:
-        pass
+    backends: list[BackendName] = ["export"]
+    if _fe.is_available():
+        backends.append("formula_evaluator")
     return backends
 
 

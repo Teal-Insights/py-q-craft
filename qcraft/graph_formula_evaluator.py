@@ -31,7 +31,7 @@ DEFAULT_BINDINGS = _REPO_ROOT / "bindings"
 DEFAULT_CACHE_DIR = _REPO_ROOT / ".cache" / "dependency-graph"
 _EVAL_LOCK = threading.Lock()
 
-# Fallback dynamic-ref domains when series bindings cannot be loaded.
+# Dynamic-ref domains used when no series bindings are shipped.
 _CONSTRAINTS_SCHEMA: dict[str, Any] = {
     "Dashboard!C17": Literal["High", "Low", "Medium"],
     "Dashboard!C28": Literal[
@@ -51,10 +51,14 @@ def is_available(*, workbook: Path | None = None) -> bool:
     if not path.is_file():
         return False
     try:
-        import excel_grapher  # noqa: F401
-        from excel_grapher.grapher import DynamicRefConfig, create_dependency_graph  # noqa: F401
-        import fastpyxl
         import inspect
+
+        import excel_grapher  # noqa: F401
+        import fastpyxl
+        from excel_grapher.grapher import (  # noqa: F401
+            DynamicRefConfig,
+            create_dependency_graph,
+        )
 
         # excel-grapher may require a newer fastpyxl than is installed.
         if "keep_formula_cache" not in inspect.signature(fastpyxl.load_workbook).parameters:
@@ -86,15 +90,10 @@ def _build_dynamic_refs(workbook: Path) -> Any:
     from excel_grapher.grapher import DynamicRefConfig
 
     if DEFAULT_BINDINGS.is_dir():
-        try:
-            from excel_grapher.series_bindings import load_series_bindings
+        from excel_grapher.series_bindings import load_series_bindings
 
-            bindings = load_series_bindings(DEFAULT_BINDINGS)
-            return DynamicRefConfig.from_bindings(
-                bindings, workbook, bindings_path=DEFAULT_BINDINGS
-            )
-        except Exception:
-            pass
+        bindings = load_series_bindings(DEFAULT_BINDINGS)
+        return DynamicRefConfig.from_bindings(bindings, workbook, bindings_path=DEFAULT_BINDINGS)
     return DynamicRefConfig.from_constraints(_CONSTRAINTS_SCHEMA)
 
 

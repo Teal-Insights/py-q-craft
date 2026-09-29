@@ -7,8 +7,9 @@ can return the full bound surface. Addresses come from ``data``.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Literal, Mapping
+from typing import Any, Literal
 
 from . import data
 from .model import Model
@@ -498,8 +499,7 @@ def all_cell_addresses() -> tuple[str, ...]:
     for node in NODES:
         if "address" in node:
             addresses.append(node["address"])
-        for address in node.get("addresses", {}).values():
-            addresses.append(address)
+        addresses.extend(node.get("addresses", {}).values())
     return tuple(dict.fromkeys(addresses))
 
 
@@ -519,17 +519,17 @@ def input_cell_writes(flat_inputs: Mapping[str, Any]) -> dict[str, Any]:
 
 
 __all__ = [
-    "INPUT_IDS",
-    "VIZ_INPUT_IDS",
-    "SERIES_IDS",
     "EDGES",
+    "INPUT_IDS",
     "NODES",
     "NODES_BY_ID",
+    "SERIES_IDS",
+    "VIZ_INPUT_IDS",
     "BackendName",
-    "axes",
-    "all_cell_addresses",
-    "input_cell_writes",
-    "_node",
     "_flat_addresses",
+    "_node",
     "_scalar_address",
+    "all_cell_addresses",
+    "axes",
+    "input_cell_writes",
 ]
