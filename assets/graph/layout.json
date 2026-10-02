@@ -1,0 +1,1536 @@
+{
+  "version": 1,
+  "generator": "excel-grapher 24.1.0 clustered_force_layout",
+  "orientation": "left_to_right",
+  "link_distance": 40.0,
+  "positions": {
+    "country": [
+      312.93,
+      51.14
+    ],
+    "demography_scenario": [
+      362.63,
+      -33.95
+    ],
+    "productivity_start": [
+      346.18,
+      15.34
+    ],
+    "productivity_end": [
+      375.71,
+      34.26
+    ],
+    "inflation_start": [
+      364.05,
+      -92.93
+    ],
+    "inflation_end": [
+      344.77,
+      106.61
+    ],
+    "interest_rate_mode": [
+      397.84,
+      -20.61
+    ],
+    "real_interest_rate": [
+      332.46,
+      -71.86
+    ],
+    "fiscal_rule_enabled": [
+      416.55,
+      101.26
+    ],
+    "debt_target": [
+      424.73,
+      -69.31
+    ],
+    "expenditure_rigidity": [
+      386.71,
+      74.86
+    ],
+    "productivity_growth": [
+      231.75,
+      47.39
+    ],
+    "inflation_path": [
+      172.12,
+      -51.14
+    ],
+    "baseline_interest_rate": [
+      226.88,
+      -16.3
+    ],
+    "macrofiscal_debt_to_gdp": [
+      151.0,
+      11.12
+    ],
+    "demography_total_population": [
+      200.35,
+      24.42
+    ],
+    "climate_data_labour_productivity_growth_variation_paris": [
+      178.93,
+      -4.33
+    ],
+    "baseline_debt_to_gdp": [
+      477.0,
+      -10.69
+    ],
+    "baseline_primary_balance_pct_gdp": [
+      515.86,
+      -5.47
+    ],
+    "baseline_overall_balance_pct_gdp": [
+      594.67,
+      -3.46
+    ],
+    "baseline_real_gdp_growth": [
+      619.29,
+      14.25
+    ],
+    "baseline_fiscal_consolidation_gap": [
+      569.12,
+      -22.51
+    ],
+    "paris_engine_gross_debt_pct_gdp": [
+      277.4,
+      -4.79
+    ],
+    "hot_unadapted_engine_gross_debt_pct_gdp": [
+      320.83,
+      -28.6
+    ],
+    "output_scenarios_debt_to_gdp_summary_paris": [
+      687.04,
+      -10.64
+    ],
+    "output_scenarios_debt_to_gdp_summary_hot_unadapted": [
+      731.69,
+      -29.37
+    ],
+    "discrete_revenue_shocks": [
+      418.13,
+      39.63
+    ],
+    "discrete_primary_expenditure_shocks": [
+      383.2,
+      -134.44
+    ],
+    "baseline_engine_working_age_population": [
+      -102.88,
+      15.52
+    ],
+    "baseline_engine_total_population": [
+      -106.61,
+      -14.39
+    ],
+    "baseline_engine_real_gdp_lcu": [
+      -133.8,
+      10.1
+    ],
+    "baseline_engine_nominal_gdp_lcu": [
+      -72.07,
+      17.69
+    ],
+    "baseline_engine_revenue_lcu": [
+      -133.92,
+      -23.21
+    ],
+    "baseline_engine_primary_balance_lcu": [
+      -127.69,
+      39.09
+    ],
+    "baseline_engine_overall_balance_lcu": [
+      -88.11,
+      -37.91
+    ],
+    "baseline_engine_interest_expenditure_pct_revenue": [
+      -158.09,
+      -7.11
+    ],
+    "baseline_engine_total_expenditure_pct_gdp": [
+      -100.21,
+      48.18
+    ],
+    "baseline_engine_total_expenditure_lcu": [
+      -123.33,
+      -50.22
+    ],
+    "baseline_engine_interest_expenditure_lcu": [
+      -155.76,
+      40.66
+    ],
+    "baseline_engine_primary_expenditure_lcu": [
+      -74.41,
+      -9.54
+    ],
+    "baseline_engine_gross_debt_lcu": [
+      -155.59,
+      -47.49
+    ],
+    "baseline_engine_fiscal_rule_adjustment": [
+      -122.46,
+      70.35
+    ],
+    "baseline_engine_debt_trajectory_direction": [
+      -97.06,
+      -63.56
+    ],
+    "baseline_engine_fiscal_gap_above_target": [
+      -172.53,
+      18.05
+    ],
+    "baseline_engine_fiscal_gap_below_target": [
+      -73.3,
+      46.49
+    ],
+    "baseline_fiscal_rule_flag": [
+      -141.16,
+      -76.41
+    ],
+    "baseline_debt_target_above": [
+      -152.06,
+      72.5
+    ],
+    "baseline_debt_target_below": [
+      -57.29,
+      -33.72
+    ],
+    "paris_engine_employment_growth": [
+      -178.21,
+      -28.61
+    ],
+    "paris_engine_labour_productivity_growth": [
+      -95.39,
+      81.57
+    ],
+    "paris_engine_real_gdp_growth": [
+      -113.41,
+      -87.81
+    ],
+    "paris_engine_gdp_deflator_growth": [
+      -179.33,
+      61.54
+    ],
+    "paris_engine_nominal_gdp_lcu": [
+      -42.09,
+      18.06
+    ],
+    "paris_engine_revenue_pct_gdp": [
+      -170.02,
+      -78.04
+    ],
+    "paris_engine_overall_balance_pct_gdp": [
+      -134.15,
+      98.81
+    ],
+    "paris_engine_revenue_lcu": [
+      -77.87,
+      -85.56
+    ],
+    "paris_engine_primary_expenditure_lcu": [
+      -194.86,
+      -3.4
+    ],
+    "paris_engine_primary_balance_lcu": [
+      -64.6,
+      76.15
+    ],
+    "paris_engine_overall_balance_lcu": [
+      -136.92,
+      -108.13
+    ],
+    "paris_engine_weighted_interest_rate": [
+      -166.98,
+      101.09
+    ],
+    "paris_engine_interest_expenditure_pct_revenue": [
+      -26.59,
+      -40.17
+    ],
+    "paris_engine_discrete_risk_revenue_shock": [
+      -190.51,
+      -57.68
+    ],
+    "paris_engine_discrete_risk_expenditure_shock": [
+      -108.78,
+      112.44
+    ],
+    "paris_engine_memo_interest_expenditure_pct_gdp": [
+      -98.71,
+      -113.53
+    ],
+    "paris_engine_memo_primary_expenditure_pct_gdp": [
+      -196.46,
+      36.86
+    ],
+    "paris_engine_memo_primary_balance_pct_gdp": [
+      -45.25,
+      50.39
+    ],
+    "paris_engine_memo_overall_balance_pct_gdp": [
+      -166.18,
+      -109.49
+    ],
+    "paris_engine_memo_gross_debt_pct_gdp": [
+      -148.03,
+      126.47
+    ],
+    "paris_engine_baseline_primary_expenditure_lcu": [
+      -57.92,
+      -62.64
+    ],
+    "paris_engine_primary_expenditure_baseline_share_lcu": [
+      -209.85,
+      -34.2
+    ],
+    "paris_engine_recalibration_lcu": [
+      -79.2,
+      107.98
+    ],
+    "paris_engine_total_expenditure_pct_gdp": [
+      -121.27,
+      -133.6
+    ],
+    "paris_engine_primary_balance_pct_gdp": [
+      -193.45,
+      89.53
+    ],
+    "paris_engine_total_expenditure_lcu": [
+      29.41,
+      5.27
+    ],
+    "paris_engine_interest_expenditure_lcu": [
+      -194.72,
+      -97.66
+    ],
+    "paris_engine_gross_debt_lcu": [
+      -122.56,
+      140.83
+    ],
+    "moderate_engine_employment_growth": [
+      -70.98,
+      -118.79
+    ],
+    "moderate_engine_labour_productivity_growth": [
+      -217.56,
+      15.37
+    ],
+    "moderate_engine_real_gdp_growth": [
+      -48.91,
+      103.72
+    ],
+    "moderate_engine_gdp_deflator_growth": [
+      -151.97,
+      -139.83
+    ],
+    "moderate_engine_nominal_gdp_lcu": [
+      -175.11,
+      136.07
+    ],
+    "moderate_engine_revenue_pct_gdp": [
+      -36.72,
+      -10.58
+    ],
+    "moderate_engine_overall_balance_pct_gdp": [
+      -215.62,
+      -75.15
+    ],
+    "moderate_engine_revenue_lcu": [
+      -92.18,
+      141.4
+    ],
+    "moderate_engine_primary_expenditure_lcu": [
+      -98.6,
+      -151.46
+    ],
+    "moderate_engine_primary_balance_lcu": [
+      -212.5,
+      66.02
+    ],
+    "moderate_engine_overall_balance_lcu": [
+      -11.33,
+      19.97
+    ],
+    "moderate_engine_weighted_interest_rate": [
+      -183.58,
+      -135.0
+    ],
+    "moderate_engine_interest_expenditure_pct_revenue": [
+      -144.7,
+      161.94
+    ],
+    "moderate_engine_discrete_risk_revenue_shock": [
+      -48.58,
+      -97.33
+    ],
+    "moderate_engine_discrete_risk_expenditure_shock": [
+      -230.79,
+      -12.57
+    ],
+    "moderate_engine_memo_interest_expenditure_pct_gdp": [
+      -62.28,
+      134.37
+    ],
+    "moderate_engine_memo_primary_expenditure_pct_gdp": [
+      -131.31,
+      -164.96
+    ],
+    "moderate_engine_memo_primary_balance_pct_gdp": [
+      -200.21,
+      120.72
+    ],
+    "moderate_engine_memo_overall_balance_pct_gdp": [
+      -5.5,
+      -10.04
+    ],
+    "moderate_engine_memo_gross_debt_pct_gdp": [
+      -213.26,
+      -121.62
+    ],
+    "moderate_engine_baseline_primary_expenditure_lcu": [
+      -110.09,
+      170.27
+    ],
+    "moderate_engine_primary_expenditure_baseline_share_lcu": [
+      -70.89,
+      -152.0
+    ],
+    "moderate_engine_recalibration_lcu": [
+      -232.46,
+      43.35
+    ],
+    "moderate_engine_total_expenditure_pct_gdp": [
+      -27.35,
+      83.8
+    ],
+    "moderate_engine_primary_balance_pct_gdp": [
+      -166.32,
+      -166.96
+    ],
+    "moderate_engine_total_expenditure_lcu": [
+      -172.82,
+      168.87
+    ],
+    "moderate_engine_interest_expenditure_lcu": [
+      -28.58,
+      -74.01
+    ],
+    "moderate_engine_gross_debt_lcu": [
+      -235.6,
+      -51.61
+    ],
+    "moderate_engine_gross_debt_pct_gdp": [
+      -75.17,
+      166.92
+    ],
+    "high_engine_employment_growth": [
+      -106.69,
+      -183.39
+    ],
+    "high_engine_labour_productivity_growth": [
+      -224.2,
+      101.15
+    ],
+    "high_engine_real_gdp_growth": [
+      15.4,
+      34.69
+    ],
+    "high_engine_gdp_deflator_growth": [
+      -201.12,
+      -159.58
+    ],
+    "high_engine_nominal_gdp_lcu": [
+      -132.51,
+      191.98
+    ],
+    "high_engine_revenue_pct_gdp": [
+      -44.91,
+      -136.8
+    ],
+    "high_engine_overall_balance_pct_gdp": [
+      -249.76,
+      16.72
+    ],
+    "high_engine_revenue_lcu": [
+      -36.85,
+      147.47
+    ],
+    "high_engine_primary_expenditure_lcu": [
+      -144.49,
+      -192.76
+    ],
+    "high_engine_primary_balance_lcu": [
+      -201.14,
+      156.91
+    ],
+    "high_engine_overall_balance_lcu": [
+      -2.01,
+      -55.62
+    ],
+    "high_engine_weighted_interest_rate": [
+      -235.36,
+      -99.51
+    ],
+    "high_engine_interest_expenditure_pct_revenue": [
+      -92.64,
+      195.16
+    ],
+    "high_engine_discrete_risk_revenue_shock": [
+      -77.26,
+      -186.15
+    ],
+    "high_engine_discrete_risk_expenditure_shock": [
+      -243.06,
+      77.33
+    ],
+    "high_engine_memo_interest_expenditure_pct_gdp": [
+      -17.95,
+      51.69
+    ],
+    "high_engine_memo_primary_expenditure_pct_gdp": [
+      -183.87,
+      -191.17
+    ],
+    "high_engine_memo_primary_balance_pct_gdp": [
+      -161.37,
+      200.18
+    ],
+    "high_engine_memo_overall_balance_pct_gdp": [
+      -23.55,
+      -115.48
+    ],
+    "high_engine_memo_gross_debt_pct_gdp": [
+      -256.87,
+      -27.45
+    ],
+    "high_engine_baseline_primary_expenditure_lcu": [
+      -50.67,
+      181.34
+    ],
+    "high_engine_primary_expenditure_baseline_share_lcu": [
+      -118.77,
+      -212.0
+    ],
+    "high_engine_recalibration_lcu": [
+      -227.03,
+      139.5
+    ],
+    "high_engine_total_expenditure_pct_gdp": [
+      18.88,
+      -26.32
+    ],
+    "high_engine_primary_balance_pct_gdp": [
+      -229.65,
+      -149.79
+    ],
+    "high_engine_total_expenditure_lcu": [
+      -115.62,
+      217.72
+    ],
+    "high_engine_interest_expenditure_lcu": [
+      -48.43,
+      -175.25
+    ],
+    "high_engine_gross_debt_lcu": [
+      -263.12,
+      53.08
+    ],
+    "high_engine_gross_debt_pct_gdp": [
+      -20.91,
+      122.25
+    ],
+    "hot_engine_employment_growth": [
+      -162.81,
+      -216.39
+    ],
+    "hot_engine_labour_productivity_growth": [
+      -192.28,
+      195.5
+    ],
+    "hot_engine_real_gdp_growth": [
+      -3.56,
+      -92.79
+    ],
+    "hot_engine_gdp_deflator_growth": [
+      -255.97,
+      -75.98
+    ],
+    "hot_engine_nominal_gdp_lcu": [
+      -69.19,
+      212.04
+    ],
+    "hot_engine_revenue_pct_gdp": [
+      -88.11,
+      -218.56
+    ],
+    "hot_engine_overall_balance_pct_gdp": [
+      -250.04,
+      118.92
+    ],
+    "hot_engine_revenue_lcu": [
+      5.44,
+      68.65
+    ],
+    "hot_engine_primary_expenditure_lcu": [
+      -212.7,
+      -193.37
+    ],
+    "hot_engine_primary_balance_lcu": [
+      -145.33,
+      229.57
+    ],
+    "hot_engine_overall_balance_lcu": [
+      -21.48,
+      -157.45
+    ],
+    "hot_engine_weighted_interest_rate": [
+      -273.93,
+      0.01
+    ],
+    "hot_engine_interest_expenditure_pct_revenue": [
+      -21.71,
+      180.61
+    ],
+    "hot_engine_discrete_risk_revenue_shock": [
+      -136.66,
+      -236.42
+    ],
+    "hot_engine_discrete_risk_expenditure_shock": [
+      -220.49,
+      181.78
+    ],
+    "hot_engine_memo_interest_expenditure_pct_gdp": [
+      27.2,
+      -56.95
+    ],
+    "hot_engine_memo_primary_expenditure_pct_gdp": [
+      -251.93,
+      -129.47
+    ],
+    "hot_engine_memo_primary_balance_pct_gdp": [
+      -93.01,
+      237.3
+    ],
+    "hot_engine_memo_overall_balance_pct_gdp": [
+      -56.99,
+      -213.36
+    ],
+    "hot_engine_memo_gross_debt_pct_gdp": [
+      -270.51,
+      91.59
+    ],
+    "hot_engine_baseline_primary_expenditure_lcu": [
+      0.81,
+      103.46
+    ],
+    "hot_engine_primary_expenditure_baseline_share_lcu": [
+      -187.77,
+      -231.34
+    ],
+    "hot_engine_recalibration_lcu": [
+      -177.9,
+      229.94
+    ],
+    "hot_engine_total_expenditure_pct_gdp": [
+      0.54,
+      -133.17
+    ],
+    "hot_engine_primary_balance_pct_gdp": [
+      -276.29,
+      -52.06
+    ],
+    "hot_engine_total_expenditure_lcu": [
+      -42.16,
+      219.72
+    ],
+    "hot_engine_interest_expenditure_lcu": [
+      -104.16,
+      -247.21
+    ],
+    "hot_engine_gross_debt_lcu": [
+      -246.43,
+      163.63
+    ],
+    "hot_engine_gross_debt_pct_gdp": [
+      52.21,
+      27.4
+    ],
+    "hot_adapted_engine_employment_growth": [
+      -239.52,
+      -183.11
+    ],
+    "hot_adapted_engine_labour_productivity_growth": [
+      -124.15,
+      254.25
+    ],
+    "hot_adapted_engine_real_gdp_growth": [
+      -27.83,
+      -198.28
+    ],
+    "hot_adapted_engine_gdp_deflator_growth": [
+      -284.82,
+      33.22
+    ],
+    "hot_adapted_engine_nominal_gdp_lcu": [
+      -3.59,
+      157.17
+    ],
+    "hot_adapted_engine_revenue_pct_gdp": [
+      -157.71,
+      -257.56
+    ],
+    "hot_adapted_engine_overall_balance_pct_gdp": [
+      -210.98,
+      221.13
+    ],
+    "hot_adapted_engine_revenue_lcu": [
+      24.86,
+      -92.27
+    ],
+    "hot_adapted_engine_primary_expenditure_lcu": [
+      -271.68,
+      -106.14
+    ],
+    "hot_adapted_engine_primary_balance_lcu": [
+      -68.63,
+      253.38
+    ],
+    "hot_adapted_engine_overall_balance_lcu": [
+      -69.01,
+      -247.87
+    ],
+    "hot_adapted_engine_weighted_interest_rate": [
+      -277.6,
+      131.87
+    ],
+    "hot_adapted_engine_interest_expenditure_pct_revenue": [
+      29.04,
+      91.53
+    ],
+    "hot_adapted_engine_discrete_risk_revenue_shock": [
+      -216.42,
+      -227.85
+    ],
+    "hot_adapted_engine_discrete_risk_expenditure_shock": [
+      -159.76,
+      261.12
+    ],
+    "hot_adapted_engine_memo_interest_expenditure_pct_gdp": [
+      0.04,
+      -178.86
+    ],
+    "hot_adapted_engine_memo_primary_expenditure_pct_gdp": [
+      -295.74,
+      -23.78
+    ],
+    "hot_adapted_engine_memo_primary_balance_pct_gdp": [
+      -13.89,
+      215.34
+    ],
+    "hot_adapted_engine_memo_overall_balance_pct_gdp": [
+      -124.31,
+      -272.35
+    ],
+    "hot_adapted_engine_memo_gross_debt_pct_gdp": [
+      -242.0,
+      203.79
+    ],
+    "hot_adapted_engine_baseline_primary_expenditure_lcu": [
+      52.07,
+      -17.91
+    ],
+    "hot_adapted_engine_primary_expenditure_baseline_share_lcu": [
+      -264.27,
+      -165.12
+    ],
+    "hot_adapted_engine_recalibration_lcu": [
+      -99.89,
+      274.85
+    ],
+    "hot_adapted_engine_total_expenditure_pct_gdp": [
+      -34.91,
+      -236.68
+    ],
+    "hot_adapted_engine_primary_balance_pct_gdp": [
+      -295.73,
+      72.24
+    ],
+    "hot_adapted_engine_total_expenditure_lcu": [
+      16.68,
+      136.52
+    ],
+    "hot_adapted_engine_interest_expenditure_lcu": [
+      -184.85,
+      -268.36
+    ],
+    "hot_adapted_engine_gross_debt_lcu": [
+      -196.71,
+      255.89
+    ],
+    "hot_adapted_engine_gross_debt_pct_gdp": [
+      28.27,
+      -140.67
+    ],
+    "hot_unadapted_engine_employment_growth": [
+      -293.94,
+      -82.04
+    ],
+    "hot_unadapted_engine_labour_productivity_growth": [
+      -39.92,
+      256.24
+    ],
+    "hot_unadapted_engine_real_gdp_growth": [
+      -86.93,
+      -277.41
+    ],
+    "hot_unadapted_engine_gdp_deflator_growth": [
+      -274.9,
+      165.99
+    ],
+    "hot_unadapted_engine_nominal_gdp_lcu": [
+      39.32,
+      59.33
+    ],
+    "hot_unadapted_engine_revenue_pct_gdp": [
+      -245.81,
+      -223.42
+    ],
+    "hot_unadapted_engine_overall_balance_pct_gdp": [
+      -136.61,
+      286.66
+    ],
+    "hot_unadapted_engine_revenue_lcu": [
+      -3.74,
+      -217.24
+    ],
+    "hot_unadapted_engine_primary_expenditure_lcu": [
+      -308.01,
+      10.0
+    ],
+    "hot_unadapted_engine_primary_balance_lcu": [
+      11.44,
+      198.98
+    ],
+    "hot_unadapted_engine_overall_balance_lcu": [
+      -146.06,
+      -295.19
+    ],
+    "hot_unadapted_engine_weighted_interest_rate": [
+      -233.56,
+      242.26
+    ],
+    "hot_unadapted_engine_interest_expenditure_pct_revenue": [
+      55.89,
+      -64.69
+    ],
+    "hot_unadapted_engine_discrete_risk_revenue_shock": [
+      -286.36,
+      -143.52
+    ],
+    "hot_unadapted_engine_discrete_risk_expenditure_shock": [
+      -73.82,
+      292.2
+    ],
+    "hot_unadapted_engine_memo_interest_expenditure_pct_gdp": [
+      -47.18,
+      -272.9
+    ],
+    "hot_unadapted_engine_memo_primary_expenditure_pct_gdp": [
+      -300.25,
+      109.48
+    ],
+    "hot_unadapted_engine_memo_primary_balance_pct_gdp": [
+      42.93,
+      121.7
+    ],
+    "hot_unadapted_engine_memo_overall_balance_pct_gdp": [
+      -214.32,
+      -266.89
+    ],
+    "hot_unadapted_engine_memo_gross_debt_pct_gdp": [
+      -177.71,
+      288.81
+    ],
+    "hot_unadapted_engine_baseline_primary_expenditure_lcu": [
+      28.57,
+      -175.38
+    ],
+    "hot_unadapted_engine_primary_expenditure_baseline_share_lcu": [
+      -311.96,
+      -53.25
+    ],
+    "hot_unadapted_engine_recalibration_lcu": [
+      -10.72,
+      255.11
+    ],
+    "hot_unadapted_engine_total_expenditure_pct_gdp": [
+      -107.54,
+      -304.68
+    ],
+    "hot_unadapted_engine_primary_balance_pct_gdp": [
+      -270.6,
+      209.04
+    ],
+    "hot_unadapted_engine_total_expenditure_lcu": [
+      83.88,
+      16.11
+    ],
+    "hot_unadapted_engine_interest_expenditure_lcu": [
+      -269.25,
+      -203.73
+    ],
+    "hot_unadapted_engine_gross_debt_lcu": [
+      -111.34,
+      309.59
+    ],
+    "output_baseline_primary_expenditure_pct_gdp_summary": [
+      -11.81,
+      -258.54
+    ],
+    "output_baseline_interest_expenditure_pct_gdp_summary": [
+      -316.24,
+      48.42
+    ],
+    "output_baseline_interest_rate_summary": [
+      28.78,
+      174.24
+    ],
+    "output_baseline_primary_balance_pct_gdp_summary": [
+      -175.7,
+      -303.74
+    ],
+    "output_baseline_overall_balance_pct_gdp_summary": [
+      -216.43,
+      280.73
+    ],
+    "output_baseline_debt_to_gdp_summary": [
+      45.48,
+      -116.46
+    ],
+    "output_baseline_dspb_milestones_pb": [
+      -304.93,
+      -116.19
+    ],
+    "output_baseline_dspb_milestones_pb_star": [
+      -42.48,
+      292.39
+    ],
+    "output_baseline_dspb_milestones_pb_gap": [
+      -66.35,
+      -303.86
+    ],
+    "output_baseline_primary_expenditure_pct_gdp_path": [
+      -306.92,
+      161.88
+    ],
+    "output_baseline_interest_expenditure_pct_gdp_path": [
+      63.24,
+      90.13
+    ],
+    "output_baseline_interest_rate_path": [
+      -244.51,
+      -261.12
+    ],
+    "output_baseline_primary_balance_pct_gdp_path": [
+      -153.14,
+      315.83
+    ],
+    "output_baseline_overall_balance_pct_gdp_path": [
+      26.21,
+      -220.17
+    ],
+    "output_baseline_debt_to_gdp_path": [
+      -332.03,
+      -15.18
+    ],
+    "output_scenarios_primary_balance_pct_gdp_summary_baseline": [
+      16.47,
+      239.8
+    ],
+    "output_scenarios_primary_balance_pct_gdp_summary_paris": [
+      -129.25,
+      -330.34
+    ],
+    "output_scenarios_primary_balance_pct_gdp_summary_moderate": [
+      -263.92,
+      250.5
+    ],
+    "output_scenarios_primary_balance_pct_gdp_summary_high": [
+      74.7,
+      -38.24
+    ],
+    "output_scenarios_primary_balance_pct_gdp_summary_hot": [
+      -296.99,
+      -185.54
+    ],
+    "output_scenarios_primary_balance_pct_gdp_summary_hot_adapted": [
+      -84.31,
+      329.44
+    ],
+    "output_scenarios_primary_balance_pct_gdp_summary_hot_unadapted": [
+      -22.22,
+      -295.89
+    ],
+    "output_scenarios_debt_to_gdp_summary_baseline": [
+      -329.94,
+      95.49
+    ],
+    "output_scenarios_debt_to_gdp_summary_moderate": [
+      55.98,
+      157.03
+    ],
+    "output_scenarios_debt_to_gdp_summary_high": [
+      -206.78,
+      -308.25
+    ],
+    "output_scenarios_debt_to_gdp_summary_hot": [
+      -199.09,
+      315.01
+    ],
+    "output_scenarios_debt_to_gdp_summary_hot_adapted": [
+      59.74,
+      -168.78
+    ],
+    "output_scenarios_dspb_milestones_baseline_pb": [
+      -330.52,
+      -87.54
+    ],
+    "output_scenarios_dspb_milestones_baseline_pb_star": [
+      -10.89,
+      299.0
+    ],
+    "output_scenarios_dspb_milestones_baseline_pb_gap": [
+      -86.87,
+      -334.17
+    ],
+    "output_scenarios_dspb_milestones_paris_pb": [
+      -299.48,
+      196.81
+    ],
+    "output_scenarios_dspb_milestones_paris_pb_star": [
+      75.85,
+      56.22
+    ],
+    "output_scenarios_dspb_milestones_moderate_pb": [
+      -275.84,
+      -252.43
+    ],
+    "output_scenarios_dspb_milestones_moderate_pb_star": [
+      -127.5,
+      341.87
+    ],
+    "output_scenarios_dspb_milestones_high_pb": [
+      19.38,
+      -255.4
+    ],
+    "output_scenarios_dspb_milestones_high_pb_star": [
+      -341.41,
+      23.75
+    ],
+    "output_scenarios_dspb_milestones_hot_pb": [
+      43.3,
+      222.25
+    ],
+    "output_scenarios_dspb_milestones_hot_pb_star": [
+      -161.58,
+      -339.07
+    ],
+    "output_scenarios_dspb_milestones_hot_adapted_pb": [
+      -248.12,
+      283.2
+    ],
+    "output_scenarios_dspb_milestones_hot_adapted_pb_star": [
+      66.79,
+      -95.0
+    ],
+    "output_scenarios_dspb_milestones_hot_unadapted_pb": [
+      -318.99,
+      -159.67
+    ],
+    "output_scenarios_dspb_milestones_hot_unadapted_pb_star": [
+      -50.71,
+      330.51
+    ],
+    "output_scenarios_primary_balance_pct_gdp_baseline_path": [
+      -41.6,
+      -326.75
+    ],
+    "output_scenarios_overall_balance_pct_gdp_baseline_path": [
+      -325.18,
+      135.86
+    ],
+    "output_scenarios_debt_to_gdp_baseline_path": [
+      76.75,
+      127.35
+    ],
+    "macrofiscal_country": [
+      -238.73,
+      -301.17
+    ],
+    "macrofiscal_real_gdp_lcu": [
+      -174.58,
+      342.01
+    ],
+    "macrofiscal_nominal_gdp_lcu": [
+      53.34,
+      -207.06
+    ],
+    "macrofiscal_gdp_deflator": [
+      -345.04,
+      -48.15
+    ],
+    "macrofiscal_revenue_lcu": [
+      17.18,
+      282.17
+    ],
+    "macrofiscal_expenditure_lcu": [
+      -108.06,
+      -364.67
+    ],
+    "macrofiscal_overall_balance_lcu": [
+      -294.48,
+      240.57
+    ],
+    "macrofiscal_primary_balance_lcu": [
+      102.87,
+      -26.8
+    ],
+    "macrofiscal_debt_lcu": [
+      -298.01,
+      -225.97
+    ],
+    "macrofiscal_interest_expenditure_lcu": [
+      -99.53,
+      365.61
+    ],
+    "macrofiscal_primary_expenditure_lcu": [
+      10.62,
+      -298.47
+    ],
+    "macrofiscal_real_gdp_growth": [
+      -347.04,
+      64.9
+    ],
+    "macrofiscal_nominal_gdp_growth": [
+      62.07,
+      194.54
+    ],
+    "macrofiscal_gdp_deflator_growth": [
+      -193.68,
+      -348.18
+    ],
+    "macrofiscal_revenue_pct_gdp": [
+      -230.61,
+      324.82
+    ],
+    "macrofiscal_primary_expenditure_pct_gdp": [
+      74.24,
+      -138.34
+    ],
+    "macrofiscal_interest_rate": [
+      -336.82,
+      -127.43
+    ],
+    "macrofiscal_overall_balance_pct_gdp": [
+      -16.83,
+      337.51
+    ],
+    "macrofiscal_primary_balance_pct_gdp": [
+      -63.05,
+      -361.7
+    ],
+    "macrofiscal_interest_growth_differential": [
+      -333.87,
+      202.13
+    ],
+    "demography_country": [
+      100.48,
+      93.25
+    ],
+    "demography_scenario_flag": [
+      -273.13,
+      -296.28
+    ],
+    "demography_working_age_population": [
+      -147.38,
+      372.36
+    ],
+    "demography_working_age_population_medium": [
+      50.28,
+      -266.09
+    ],
+    "demography_working_age_population_high": [
+      -370.17,
+      0.46
+    ],
+    "demography_working_age_population_low": [
+      50.19,
+      266.64
+    ],
+    "demography_total_population_medium": [
+      -144.83,
+      -373.16
+    ],
+    "demography_total_population_high": [
+      -276.8,
+      301.75
+    ],
+    "demography_total_population_low": [
+      94.79,
+      -87.49
+    ],
+    "productivity_country": [
+      -333.47,
+      -203.53
+    ],
+    "productivity_start_flag": [
+      -59.95,
+      369.34
+    ],
+    "productivity_end_flag": [
+      -15.02,
+      -349.07
+    ],
+    "productivity_level": [
+      -360.8,
+      130.72
+    ],
+    "productivity_convergence_trajectory": [
+      95.18,
+      166.26
+    ],
+    "inflation_start_flag": [
+      -231.93,
+      -344.14
+    ],
+    "inflation_end_flag": [
+      -196.62,
+      368.95
+    ],
+    "inflation_convergence_trajectory": [
+      87.79,
+      -209.86
+    ],
+    "interest_rate_mode_flag": [
+      -368.34,
+      -80.22
+    ],
+    "interest_rate_end_of_mtff": [
+      19.48,
+      338.91
+    ],
+    "interest_growth_differential_end_of_mtff": [
+      -81.37,
+      -399.77
+    ],
+    "interest_rate_long_run_real_rate": [
+      -330.9,
+      241.7
+    ],
+    "interest_rate_nominal_interest_rate": [
+      111.55,
+      55.84
+    ],
+    "interest_rate_nominal_gdp_growth_baseline": [
+      -306.7,
+      -282.46
+    ],
+    "interest_rate_inflation_baseline": [
+      -122.34,
+      405.08
+    ],
+    "interest_rate_long_run_assumption": [
+      48.33,
+      -305.77
+    ],
+    "interest_rate_long_run_nominal_interest_rate": [
+      -379.06,
+      42.25
+    ],
+    "interest_rate_long_run_interest_growth_differential": [
+      79.53,
+      245.41
+    ],
+    "interest_rate_long_run_real_interest_rate": [
+      -174.69,
+      -397.21
+    ],
+    "climate_database_country": [
+      -265.98,
+      339.58
+    ],
+    "climate_database_gdp_loss_pct_paris": [
+      109.88,
+      -132.75
+    ],
+    "climate_database_gdp_loss_pct_moderate": [
+      -356.52,
+      -169.98
+    ],
+    "climate_database_gdp_loss_pct_high": [
+      -21.06,
+      379.73
+    ],
+    "climate_database_gdp_loss_pct_hot": [
+      -32.69,
+      -387.76
+    ],
+    "climate_database_gdp_loss_pct_hot_adapted": [
+      -354.06,
+      171.35
+    ],
+    "climate_database_gdp_loss_pct_hot_unadapted": [
+      114.96,
+      130.49
+    ],
+    "climate_database_gdp_index_paris": [
+      -270.39,
+      -338.04
+    ],
+    "climate_database_gdp_index_moderate": [
+      -172.67,
+      404.43
+    ],
+    "climate_database_gdp_index_high": [
+      80.51,
+      -248.75
+    ],
+    "climate_database_gdp_index_hot": [
+      -380.7,
+      -36.97
+    ],
+    "climate_database_gdp_index_hot_adapted": [
+      48.51,
+      308.18
+    ],
+    "climate_database_gdp_index_hot_unadapted": [
+      -124.3,
+      -410.39
+    ],
+    "climate_database_labour_productivity_growth_variation_paris": [
+      -307.81,
+      282.14
+    ],
+    "climate_database_labour_productivity_growth_variation_moderate": [
+      124.85,
+      -84.71
+    ],
+    "climate_database_labour_productivity_growth_variation_high": [
+      -330.24,
+      -246.02
+    ],
+    "climate_database_labour_productivity_growth_variation_hot": [
+      -78.16,
+      405.96
+    ],
+    "climate_database_labour_productivity_growth_variation_hot_adapted": [
+      20.7,
+      -341.97
+    ],
+    "climate_database_labour_productivity_growth_variation_hot_unadapted": [
+      -373.47,
+      93.02
+    ],
+    "climate_data_labour_productivity_growth_variation_moderate": [
+      98.05,
+      206.95
+    ],
+    "climate_data_labour_productivity_growth_variation_high": [
+      -215.84,
+      -383.19
+    ],
+    "climate_data_labour_productivity_growth_variation_hot": [
+      -233.0,
+      371.06
+    ],
+    "climate_data_labour_productivity_growth_variation_hot_adapted": [
+      101.69,
+      -174.64
+    ],
+    "climate_data_labour_productivity_growth_variation_hot_unadapted": [
+      -371.49,
+      -121.71
+    ],
+    "baseline_primary_expenditure_pct_gdp": [
+      594.78,
+      -58.53
+    ],
+    "baseline_interest_expenditure_pct_gdp": [
+      640.53,
+      50.0
+    ],
+    "baseline_debt_stabilizing_primary_balance": [
+      635.13,
+      -29.21
+    ],
+    "baseline_nominal_gdp_growth": [
+      564.89,
+      76.55
+    ],
+    "baseline_revenue_pct_gdp": [
+      670.11,
+      29.31
+    ],
+    "baseline_employment_growth": [
+      626.8,
+      -73.27
+    ],
+    "baseline_labour_productivity_growth": [
+      633.88,
+      94.04
+    ],
+    "baseline_gdp_deflator_growth": [
+      666.19,
+      -50.85
+    ],
+    "baseline_population_growth": [
+      561.63,
+      22.16
+    ],
+    "scenario_primary_balance_pct_gdp": [
+      671.01,
+      86.6
+    ],
+    "scenario_overall_balance_pct_gdp": [
+      637.28,
+      -109.1
+    ],
+    "scenario_debt_to_gdp": [
+      600.4,
+      85.66
+    ],
+    "scenario_debt_stabilizing_primary_balance_paris": [
+      708.65,
+      9.76
+    ],
+    "scenario_debt_stabilizing_primary_balance_moderate": [
+      583.04,
+      -100.45
+    ],
+    "scenario_debt_stabilizing_primary_balance_high": [
+      636.82,
+      135.25
+    ],
+    "scenario_debt_stabilizing_primary_balance_hot": [
+      673.3,
+      -97.26
+    ],
+    "scenario_debt_stabilizing_primary_balance_hot_adapted": [
+      596.93,
+      45.88
+    ],
+    "scenario_debt_stabilizing_primary_balance_hot_unadapted": [
+      698.13,
+      59.6
+    ],
+    "scenario_nominal_gdp_growth_paris": [
+      608.47,
+      -136.01
+    ],
+    "scenario_nominal_gdp_growth_moderate": [
+      596.66,
+      135.08
+    ],
+    "scenario_nominal_gdp_growth_high": [
+      702.34,
+      -65.45
+    ],
+    "scenario_nominal_gdp_growth_hot": [
+      552.4,
+      -52.47
+    ],
+    "scenario_nominal_gdp_growth_hot_adapted": [
+      674.22,
+      131.56
+    ],
+    "scenario_nominal_gdp_growth_hot_unadapted": [
+      652.69,
+      -149.72
+    ],
+    "scenario_primary_expenditure_pct_gdp_paris": [
+      557.72,
+      125.97
+    ],
+    "scenario_primary_expenditure_pct_gdp_moderate": [
+      741.36,
+      30.32
+    ],
+    "scenario_primary_expenditure_pct_gdp_high": [
+      569.68,
+      -153.09
+    ],
+    "scenario_primary_expenditure_pct_gdp_hot": [
+      622.26,
+      174.41
+    ],
+    "scenario_primary_expenditure_pct_gdp_hot_adapted": [
+      702.7,
+      -129.25
+    ],
+    "scenario_primary_expenditure_pct_gdp_hot_unadapted": [
+      530.17,
+      43.99
+    ],
+    "scenario_interest_expenditure_pct_gdp_paris": [
+      713.75,
+      116.49
+    ],
+    "scenario_interest_expenditure_pct_gdp_moderate": [
+      616.2,
+      -182.02
+    ],
+    "scenario_interest_expenditure_pct_gdp_high": [
+      559.74,
+      170.28
+    ],
+    "scenario_interest_expenditure_pct_gdp_hot": [
+      757.99,
+      -32.41
+    ],
+    "scenario_interest_expenditure_pct_gdp_hot_adapted": [
+      541.18,
+      -124.98
+    ],
+    "scenario_interest_expenditure_pct_gdp_hot_unadapted": [
+      657.11,
+      198.79
+    ],
+    "scenario_real_gdp_level_index_paris": [
+      689.48,
+      -172.63
+    ],
+    "scenario_real_gdp_level_index_moderate": [
+      528.44,
+      95.21
+    ],
+    "scenario_real_gdp_level_index_high": [
+      736.09,
+      77.88
+    ],
+    "scenario_real_gdp_level_index_hot": [
+      575.56,
+      -198.16
+    ],
+    "scenario_real_gdp_level_index_hot_adapted": [
+      593.58,
+      206.33
+    ],
+    "scenario_real_gdp_level_index_hot_unadapted": [
+      732.52,
+      -95.53
+    ],
+    "scenario_fiscal_consolidation_gap_milestones_2050": [
+      532.39,
+      -82.92
+    ],
+    "scenario_fiscal_consolidation_gap_milestones_2075": [
+      696.16,
+      168.15
+    ],
+    "scenario_fiscal_consolidation_gap_milestones_2099": [
+      649.55,
+      -208.08
+    ]
+  }
+}

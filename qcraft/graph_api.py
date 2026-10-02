@@ -158,9 +158,7 @@ def bind_model_inputs(flat: FlatInputs) -> dict[str, Any]:
     flat maps onto workbook cells instead.
     """
     kwargs = {
-        name: flat[name]
-        for name in VIZ_INPUT_IDS
-        if not isinstance(flat[name], dict)
+        name: flat[name] for name in VIZ_INPUT_IDS if not isinstance(flat[name], dict)
     }
     kwargs["discrete_revenue_shocks"] = data.DISCRETE_REVENUE_SHOCKS_DEFAULT
     kwargs["discrete_primary_expenditure_shocks"] = (
@@ -210,7 +208,9 @@ def evaluate_formula_evaluator(inputs: Mapping[str, Any] | None = None) -> FlatV
     except GraphApiError:
         raise
     except Exception as exc:
-        raise GraphApiError(str(exc), status=503, errors={"_formula_evaluator": str(exc)}) from exc
+        raise GraphApiError(
+            str(exc), status=503, errors={"_formula_evaluator": str(exc)}
+        ) from exc
 
 
 def evaluate(

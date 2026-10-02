@@ -1,4 +1,4 @@
-schema_version: 1.19.0
+schema_version: 1.22.0
 workbook: data/qcraft-toolv10.xlsx
 series:
 - id: baseline_debt_direction_above_sentinel

@@ -645,7 +645,8 @@
       "domain": {
         "min": -20.0,
         "max": 20.0
-      }
+      },
+      "hint": "Used only while interest_rate_mode is \u201cReal interest rate (a)\u201d; under other modes this value does not move baseline_interest_rate."
     },
     {
       "id": "fiscal_rule_enabled",

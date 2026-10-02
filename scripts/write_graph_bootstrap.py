@@ -22,7 +22,9 @@ def main() -> int:
     # Prefer the exported Model: FE over the full Q-CRAFT workbook is optional.
     backend = "export" if "export" in backends else backends[0]
     payload = bootstrap(backend=backend)
-    OUT.write_text(json.dumps(payload, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    OUT.write_text(
+        json.dumps(payload, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
     print(f"wrote {OUT} (backend={backend})")
     return 0
 

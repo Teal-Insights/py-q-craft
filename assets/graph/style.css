@@ -211,6 +211,12 @@ button.primary {
   line-height: 1.4;
 }
 
+.side .series-hint {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  margin: 0.5rem 0 0.65rem;
+}
+
 .side .empty {
   color: var(--muted);
   font-size: 0.78rem;

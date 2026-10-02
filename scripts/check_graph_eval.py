@@ -19,8 +19,17 @@ def _close(a: Any, b: Any, tol: float = ATOL) -> bool:
     # Empty discrete-risk shocks are None on the model and 0 in the workbook.
     if a is None or b is None:
         other = b if a is None else a
-        return isinstance(other, (int, float)) and not isinstance(other, bool) and float(other) == 0.0
-    if isinstance(a, (int, float)) and isinstance(b, (int, float)) and not isinstance(a, bool) and not isinstance(b, bool):
+        return (
+            isinstance(other, (int, float))
+            and not isinstance(other, bool)
+            and float(other) == 0.0
+        )
+    if (
+        isinstance(a, (int, float))
+        and isinstance(b, (int, float))
+        and not isinstance(a, bool)
+        and not isinstance(b, bool)
+    ):
         return abs(float(a) - float(b)) <= tol
     return a == b
 
@@ -36,7 +45,9 @@ def compare(left: dict[str, Any], right: dict[str, Any]) -> list[str]:
             for k, v in pv.items():
                 rk = k if k in jv else str(k)
                 if rk not in jv or not _close(v, jv[rk]):
-                    errors.append(f"{key}[{k}]: export={v} formula_evaluator={jv.get(rk)}")
+                    errors.append(
+                        f"{key}[{k}]: export={v} formula_evaluator={jv.get(rk)}"
+                    )
         elif not _close(pv, jv):
             errors.append(f"{key}: export={pv} formula_evaluator={jv}")
     return errors
@@ -67,9 +78,7 @@ def main() -> int:
     if france.get("country") != "France":
         print("fail: country override not applied", file=sys.stderr)
         return 1
-    print(
-        f"ok: export bootstrap ({len(NODES)} nodes) and evaluate(country=France)"
-    )
+    print(f"ok: export bootstrap ({len(NODES)} nodes) and evaluate(country=France)")
 
     if not fe.is_available():
         print(

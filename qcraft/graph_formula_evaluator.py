@@ -61,7 +61,10 @@ def is_available(*, workbook: Path | None = None) -> bool:
         )
 
         # excel-grapher may require a newer fastpyxl than is installed.
-        if "keep_formula_cache" not in inspect.signature(fastpyxl.load_workbook).parameters:
+        if (
+            "keep_formula_cache"
+            not in inspect.signature(fastpyxl.load_workbook).parameters
+        ):
             return False
     except ImportError:
         return False
@@ -93,7 +96,9 @@ def _build_dynamic_refs(workbook: Path) -> Any:
         from excel_grapher.series_bindings import load_series_bindings
 
         bindings = load_series_bindings(DEFAULT_BINDINGS)
-        return DynamicRefConfig.from_bindings(bindings, workbook, bindings_path=DEFAULT_BINDINGS)
+        return DynamicRefConfig.from_bindings(
+            bindings, workbook, bindings_path=DEFAULT_BINDINGS
+        )
     return DynamicRefConfig.from_constraints(_CONSTRAINTS_SCHEMA)
 
 
@@ -130,7 +135,9 @@ def _cache_paths(cache_dir: Path, cache_key: str) -> tuple[Path, Path]:
     return cache_dir / f"{cache_key}.pkl.gz", cache_dir / f"{cache_key}.meta.json"
 
 
-def _load_cached_graph(workbook: Path, targets: list[str], cache_dir: Path) -> Any | None:
+def _load_cached_graph(
+    workbook: Path, targets: list[str], cache_dir: Path
+) -> Any | None:
     from excel_grapher.grapher import load_graph
 
     cache_key = _cache_key(workbook, targets)
@@ -148,7 +155,9 @@ def _load_cached_graph(workbook: Path, targets: list[str], cache_dir: Path) -> A
     return load_graph(payload_path)
 
 
-def _save_cached_graph(graph: Any, workbook: Path, targets: list[str], cache_dir: Path) -> str:
+def _save_cached_graph(
+    graph: Any, workbook: Path, targets: list[str], cache_dir: Path
+) -> str:
     from excel_grapher.grapher import dump_graph
 
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -177,10 +186,7 @@ def _open_graph(workbook: Path) -> Any:
             f"{len(targets)} targets)"
         )
         return cached
-    print(
-        f"formula_evaluator: building dependency graph "
-        f"({len(targets)} targets)…"
-    )
+    print(f"formula_evaluator: building dependency graph ({len(targets)} targets)…")
     graph = create_dependency_graph(
         workbook,
         targets,
@@ -322,7 +328,9 @@ def _get_driver(workbook: Path | None = None) -> _FormulaEvaluatorDriver:
     return _driver
 
 
-def evaluate(flat_inputs: dict[str, Any], *, workbook: Path | None = None) -> dict[str, Any]:
+def evaluate(
+    flat_inputs: dict[str, Any], *, workbook: Path | None = None
+) -> dict[str, Any]:
     """Write flat inputs onto the graph and return full series value maps."""
     with _EVAL_LOCK:
         driver = _get_driver(workbook)

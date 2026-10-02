@@ -88,7 +88,10 @@ EDGES: tuple[tuple[str, str], ...] = (
     ("debt_target", "baseline_fiscal_consolidation_gap"),
     ("baseline_debt_to_gdp", "paris_engine_gross_debt_pct_gdp"),
     ("baseline_primary_balance_pct_gdp", "paris_engine_gross_debt_pct_gdp"),
-    ("climate_data_labour_productivity_growth_variation_paris", "paris_engine_gross_debt_pct_gdp"),
+    (
+        "climate_data_labour_productivity_growth_variation_paris",
+        "paris_engine_gross_debt_pct_gdp",
+    ),
     ("baseline_debt_to_gdp", "hot_unadapted_engine_gross_debt_pct_gdp"),
     ("baseline_primary_balance_pct_gdp", "hot_unadapted_engine_gross_debt_pct_gdp"),
     ("paris_engine_gross_debt_pct_gdp", "output_scenarios_debt_to_gdp_summary_paris"),
@@ -131,6 +134,12 @@ def _sheet_of(address: str) -> str:
     return address.split("!", 1)[0]
 
 
+REAL_INTEREST_RATE_HINT = (
+    "Used only while interest_rate_mode is “Real interest rate (a)”; "
+    "under other modes this value does not move baseline_interest_rate."
+)
+
+
 def _domain(min_value: float, max_value: float) -> dict[str, float]:
     return {"min": min_value, "max": max_value}
 
@@ -156,6 +165,7 @@ def _node(
     domain: dict[str, float] | None = None,
     options: list[Any] | None = None,
     option_labels: dict[Any, str] | None = None,
+    hint: str | None = None,
 ) -> dict[str, Any]:
     if address is not None:
         sample = address
@@ -184,10 +194,14 @@ def _node(
         node["options"] = options
     if option_labels is not None:
         node["optionLabels"] = option_labels
+    if hint is not None:
+        node["hint"] = hint
     return node
 
 
-def _year_node(series_id: str, role: str, spec: Any, *, domain: dict[str, float]) -> dict[str, Any]:
+def _year_node(
+    series_id: str, role: str, spec: Any, *, domain: dict[str, float]
+) -> dict[str, Any]:
     return _node(
         series_id=series_id,
         role=role,
@@ -215,7 +229,11 @@ def _binding_series(filename: str) -> list[dict[str, Any]]:
 
     document = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     series = document.get("series") or []
-    return [entry for entry in series if isinstance(entry.get("id"), str) and entry.get("id")]
+    return [
+        entry
+        for entry in series
+        if isinstance(entry.get("id"), str) and entry.get("id")
+    ]
 
 
 def _lane(series: dict[str, Any], default: str) -> str:
@@ -255,7 +273,11 @@ def _bound_series_node(
             key = _json_key(raw)
             keys.append(key)
             addresses[key] = flat[raw]
-        kind = "matrix" if keys and isinstance(keys[0], str) and "|" in keys[0] else "year_map"
+        kind = (
+            "matrix"
+            if keys and isinstance(keys[0], str) and "|" in keys[0]
+            else "year_map"
+        )
         node = _node(
             series_id=series_id,
             role=role,
@@ -293,7 +315,9 @@ def _append_bound(
         if series_id in present:
             continue
         extra.append(
-            _bound_series_node(series_id, role, _lane(series, role), series.get("data_range"))
+            _bound_series_node(
+                series_id, role, _lane(series, role), series.get("data_range")
+            )
         )
         present.add(series_id)
     if not extra:
@@ -369,6 +393,7 @@ NODES: tuple[dict[str, Any], ...] = (
         keys=[None],
         address=_scalar_address(data.REAL_INTEREST_RATE_CELLS),
         domain=_domain(-20.0, 20.0),
+        hint=REAL_INTEREST_RATE_HINT,
     ),
     _node(
         series_id="fiscal_rule_enabled",

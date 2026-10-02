@@ -1,17 +1,16 @@
 /**
- * Q-CRAFT interactive dependency graph.
+ * Interactive series dependency graph.
  * Loads series topology from GET /api/graph and recomputes via
- * POST /api/evaluate with backend=formula_evaluator.
+ * POST /api/evaluate with backend=formula_evaluator (excel-grapher).
  * Fall back: ./bootstrap.json for static docs preview when the API is offline.
  */
 (function () {
   "use strict";
 
   const BACKEND = "formula_evaluator";
-  const LAYER_ORIGIN_X = 140;
-  const LAYER_GAP_X = 280;
-  const LAYER_ROW = 78;
-  const LAYER_TOP = 70;
+  const DEFAULT_TITLE = "Dependency graph";
+  const FORCE_GAP_X = 40;
+  const FORCE_GAP_Y = 18;
 
   const PREVIEW =
     typeof document !== "undefined" &&
@@ -36,6 +35,9 @@
   const positionUndo = [];
   let dragOrigin = null;
   let apiBase = "";
+  /** Precomputed force layout from layout.json. */
+  let STARTER_LAYOUT = null;
+  const Panel = globalThis.SeriesGraphPanel;
 
   function trimSlash(url) {
     return String(url || "").replace(/\/+$/, "");
@@ -43,17 +45,17 @@
 
   /**
    * Resolve remote FormulaEvaluator API base (e.g. Railway).
-   * Order: ?api=… → meta[name=tiny-dsa-graph-api] → window.TINY_DSA_GRAPH_API
-   * → config.js TINY_DSA_GRAPH_API. Same-origin /api is tried next by loadBootstrap.
+   * Order: ?api=… → meta[name=series-graph-api] → window.SERIES_GRAPH_API
+   * → config.js SERIES_GRAPH_API. Same-origin /api is tried next by loadBootstrap.
    */
   function configuredApiBase() {
     const params = new URLSearchParams(window.location.search);
     const fromQuery = params.get("api");
     if (fromQuery) return trimSlash(fromQuery);
-    const meta = document.querySelector('meta[name="tiny-dsa-graph-api"]');
+    const meta = document.querySelector('meta[name="series-graph-api"]');
     if (meta && meta.content) return trimSlash(meta.content);
-    if (typeof window.TINY_DSA_GRAPH_API === "string" && window.TINY_DSA_GRAPH_API) {
-      return trimSlash(window.TINY_DSA_GRAPH_API);
+    if (typeof window.SERIES_GRAPH_API === "string" && window.SERIES_GRAPH_API) {
+      return trimSlash(window.SERIES_GRAPH_API);
     }
     return "";
   }
@@ -178,11 +180,32 @@
     throw lastError || new Error("Could not load graph bootstrap");
   }
 
+  /** A missing or stale layout.json is a pipeline bug, shown in the graph pane. */
+  function layoutError(message) {
+    const err = new Error(
+      `${message} Re-run the export stage so it rewrites assets/graph/layout.json from graph_schema.py.`
+    );
+    err.layout = true;
+    return err;
+  }
+
+  /** layout.json is written by the export pipeline whenever graph_schema.py has series. */
+  async function loadStarterLayout() {
+    let data;
+    try {
+      data = await fetchJson(new URL("./layout.json", window.location.href).href);
+    } catch (err) {
+      throw layoutError(`Could not load layout.json (${err.message}).`);
+    }
+    if (!data || !data.positions) throw layoutError("layout.json has no positions.");
+    return data;
+  }
+
   async function evaluateRemote(nextInputs) {
     if (!apiBase && !window.location.pathname.includes("api")) {
       // Static bootstrap-only mode (docs preview): no live recompute.
       throw new Error(
-        "Live recompute needs the graph API. Run: uv run python scripts/serve_graph_api.py"
+        "Live recompute needs the FormulaEvaluator API. Run: uv run python scripts/serve_graph_api.py"
       );
     }
     const url = apiUrl(`/api/evaluate`);
@@ -217,37 +240,22 @@
     if (series.keys.length === 1 && series.keys[0] == null) {
       return formatValue(raw);
     }
-    if (!raw || typeof raw !== "object") return formatValue(raw);
-    const keys = series.keys;
-    if (keys.length <= 5) {
-      return keys.map((key) => formatValue(raw[key] ?? raw[String(key)])).join(", ");
-    }
-    const first = formatValue(raw[keys[0]] ?? raw[String(keys[0])]);
-    const last = formatValue(raw[keys[keys.length - 1]] ?? raw[String(keys[keys.length - 1])]);
-    return `${keys.length} yrs: ${first} … ${last}`;
+    return Panel.summarize(
+      series.keys.map((key) => formatValue(raw[key])),
+      "values"
+    );
   }
 
   function addressText(series) {
     if (series.address) return series.address;
     if (series.addresses) {
-      const addresses = series.keys.map((key) => {
-        const table = series.addresses;
-        return table[key] ?? table[String(key)];
-      }).filter(Boolean);
-      if (addresses.length > 4) {
-        return `${addresses[0]} … ${addresses[addresses.length - 1]} (${addresses.length} cells)`;
-      }
-      return addresses.join(", ");
+      const addresses = series.addresses;
+      return Panel.summarize(
+        series.keys.map((key) => addresses[key] ?? addresses[String(key)]),
+        "cells"
+      );
     }
     return "";
-  }
-
-  function keysHintText(series) {
-    if (!series.keys.length || series.keys[0] == null) return "scalar";
-    if (series.keys.length > 8) {
-      return `${series.keys.length} keys: ${series.keys[0]} … ${series.keys[series.keys.length - 1]}`;
-    }
-    return series.keys.join(", ");
   }
 
   function nodeSize(valuesStr) {
@@ -286,165 +294,22 @@
     return elements;
   }
 
-  function computeLayers() {
-    const ids = SERIES.map((s) => s.id);
-    const succs = Object.fromEntries(ids.map((id) => [id, []]));
-    for (const [source, target] of SERIES_EDGES) {
-      if (!succs[source] || succs[target] === undefined) continue;
-      succs[source].push(target);
-    }
-
-    // Strongly connected components, then longest path on that DAG.
-    // A cycle would otherwise stop the hop count; nodes in one component
-    // share the hop count of the component.
-    const index = new Map();
-    const low = new Map();
-    const stack = [];
-    const onStack = new Set();
-    const comps = [];
-    let nextIndex = 0;
-    function strong(v) {
-      index.set(v, nextIndex);
-      low.set(v, nextIndex);
-      nextIndex += 1;
-      stack.push(v);
-      onStack.add(v);
-      for (const w of succs[v]) {
-        if (!index.has(w)) {
-          strong(w);
-          low.set(v, Math.min(low.get(v), low.get(w)));
-        } else if (onStack.has(w)) {
-          low.set(v, Math.min(low.get(v), index.get(w)));
-        }
-      }
-      if (low.get(v) === index.get(v)) {
-        const comp = [];
-        let w;
-        do {
-          w = stack.pop();
-          onStack.delete(w);
-          comp.push(w);
-        } while (w !== v);
-        comps.push(comp);
-      }
-    }
-    for (const id of ids) {
-      if (!index.has(id)) strong(id);
-    }
-
-    const compOf = {};
-    comps.forEach((comp, compIndex) => {
-      for (const id of comp) compOf[id] = compIndex;
+  function applyLayout(cyInstance) {
+    const sizes = {};
+    cyInstance.nodes("node.series").forEach((node) => {
+      sizes[node.id()] = { width: node.data("width"), height: node.data("height") };
     });
-    const compSuccs = comps.map(() => new Set());
-    const indegree = comps.map(() => 0);
-    for (const [source, target] of SERIES_EDGES) {
-      const from = compOf[source];
-      const to = compOf[target];
-      if (from === undefined || to === undefined || from === to) continue;
-      if (!compSuccs[from].has(to)) {
-        compSuccs[from].add(to);
-        indegree[to] += 1;
-      }
-    }
-    const compLayer = comps.map(() => 0);
-    const queue = [];
-    indegree.forEach((degree, compIndex) => {
-      if (degree === 0) queue.push(compIndex);
+    const placed = globalThis.SeriesGraphForceLayout.placeNodes({
+      positions: STARTER_LAYOUT.positions,
+      sizes,
+      linkDistance: STARTER_LAYOUT.link_distance,
+      gapX: FORCE_GAP_X,
+      gapY: FORCE_GAP_Y,
     });
-    let head = 0;
-    while (head < queue.length) {
-      const current = queue[head];
-      head += 1;
-      for (const next of compSuccs[current]) {
-        compLayer[next] = Math.max(compLayer[next], compLayer[current] + 1);
-        indegree[next] -= 1;
-        if (indegree[next] === 0) queue.push(next);
-      }
+    if (!placed) throw layoutError("layout.json does not cover every series.");
+    for (const [id, pos] of Object.entries(placed)) {
+      cyInstance.$id(id).position(pos);
     }
-    const layer = {};
-    for (const id of ids) layer[id] = compLayer[compOf[id]];
-    return layer;
-  }
-
-  function orderWithinLayers(layersById) {
-    const maxLayer = Math.max(...Object.values(layersById));
-    const columns = Array.from({ length: maxLayer + 1 }, () => []);
-    for (const series of SERIES) {
-      columns[layersById[series.id]].push(series.id);
-    }
-
-    const succs = Object.fromEntries(SERIES.map((s) => [s.id, []]));
-    const preds = Object.fromEntries(SERIES.map((s) => [s.id, []]));
-    for (const [source, target] of SERIES_EDGES) {
-      succs[source].push(target);
-      preds[target].push(source);
-    }
-
-    const rank = {};
-    columns.forEach((col) => {
-      col.forEach((id, index) => {
-        rank[id] = index;
-      });
-    });
-
-    for (let sweep = 0; sweep < 2; sweep += 1) {
-      for (let L = 1; L <= maxLayer; L += 1) {
-        columns[L].sort((a, b) => {
-          const bary = (id) => {
-            const neighbors = preds[id];
-            if (!neighbors.length) return rank[id];
-            return neighbors.reduce((sum, n) => sum + rank[n], 0) / neighbors.length;
-          };
-          return bary(a) - bary(b);
-        });
-        columns[L].forEach((id, index) => {
-          rank[id] = index;
-        });
-      }
-      for (let L = maxLayer - 1; L >= 0; L -= 1) {
-        columns[L].sort((a, b) => {
-          const bary = (id) => {
-            const neighbors = succs[id];
-            if (!neighbors.length) return rank[id];
-            return neighbors.reduce((sum, n) => sum + rank[n], 0) / neighbors.length;
-          };
-          return bary(a) - bary(b);
-        });
-        columns[L].forEach((id, index) => {
-          rank[id] = index;
-        });
-      }
-    }
-    return columns;
-  }
-
-  function applyNeuralLayout(cyInstance) {
-    const layersById = computeLayers();
-    if (!layersById) {
-      const columns = { input: [], internal: [], output: [] };
-      for (const series of SERIES) columns[series.role].push(series.id);
-      const roleX = { input: 140, internal: 520, output: 900 };
-      for (const role of ["input", "internal", "output"]) {
-        columns[role].forEach((id, index) => {
-          cyInstance.$id(id).position({
-            x: roleX[role],
-            y: LAYER_TOP + index * LAYER_ROW,
-          });
-        });
-      }
-      return;
-    }
-
-    const columns = orderWithinLayers(layersById);
-    columns.forEach((col, layerIndex) => {
-      col.forEach((id, rowIndex) => {
-        cyInstance.$id(id).position({
-          x: LAYER_ORIGIN_X + layerIndex * LAYER_GAP_X,
-          y: LAYER_TOP + rowIndex * LAYER_ROW,
-        });
-      });
-    });
   }
 
   function patchValues(cyInstance, allValues, changedIds) {
@@ -500,16 +365,11 @@
     }
   }
 
-  function optionLabel(series, option) {
-    const labels = series.optionLabels || {};
-    return labels[option] ?? labels[String(option)] ?? String(option);
-  }
-
   function renderSide(nodeId) {
     const panel = document.getElementById("side");
     if (!nodeId) {
       panel.innerHTML =
-        '<p class="empty">Select a series node. Amber inputs are editable (comma-separated values). Drag nodes to rearrange; Ctrl+Z undoes a move. Values come from excel-grapher FormulaEvaluator.</p>';
+        '<p class="empty">Select a series node. Amber inputs are editable. Drag nodes to rearrange; Ctrl+Z undoes a move. Values come from excel-grapher FormulaEvaluator.</p>';
       selectedId = null;
       return;
     }
@@ -522,54 +382,21 @@
     const series = SERIES_BY_ID[nodeId];
     const editable = series.role === "input";
     const vals = valuesText(series, values);
-    const keysHint = keysHintText(series);
+    const keysHint =
+      series.keys[0] == null ? "scalar" : Panel.summarize(series.keys, "keys");
 
     let editor = "";
     if (editable) {
-      const current = inputs[series.id];
-      if (series.kind === "enum") {
-        editor = `<label for="edit-value">Value</label><select id="edit-value">${series.options
-          .map(
-            (o) =>
-              `<option value="${o}" ${o === current ? "selected" : ""}>${o}</option>`
-          )
-          .join("")}</select>`;
-      } else if (series.kind === "enum_int") {
-        editor = `<label for="edit-value">Value</label><select id="edit-value">${series.options
-          .map(
-            (o) =>
-              `<option value="${o}" ${Number(o) === Number(current) ? "selected" : ""}>${optionLabel(
-                series,
-                o
-              )}</option>`
-          )
-          .join("")}</select>`;
-      } else if (series.kind === "int" || (series.kind === "float" && series.keys[0] == null)) {
-        const step = series.kind === "int" ? "1" : "any";
-        const min = series.domain ? ` min="${series.domain.min}"` : "";
-        const max = series.domain ? ` max="${series.domain.max}"` : "";
-        const rangeHint = series.domain
-          ? ` (${series.domain.min}–${series.domain.max})`
-          : "";
-        editor = `<label for="edit-value">Value${rangeHint}</label><input id="edit-value" type="number" step="${step}"${min}${max} value="${current}" />`;
-      } else {
-        editor = `<label for="edit-value">Values (comma-separated · ${keysHint})</label><input id="edit-value" type="text" value="${vals}" />`;
-      }
+      editor = Panel.editorHtml(series, inputs[series.id]);
       editor += `<button class="primary" type="button" id="apply-edit">Apply</button>`;
-      if (series.id === "real_interest_rate") {
-        const mode = inputs.interest_rate_mode;
-        const active = mode === "Real interest rate (a)";
-        editor += active
-          ? `<p class="hint">Used while interest_rate_mode is “Real interest rate (a)”.</p>`
-          : `<p class="hint">Inactive under interest_rate_mode “${mode}”. Switch that input to “Real interest rate (a)” for this value to move baseline_interest_rate.</p>`;
-      }
     } else {
       editor = `<p class="hint">Read-only ${series.role} series. Edit an amber input upstream to change these values.</p>`;
     }
 
     panel.innerHTML = `
-      <h2>${series.label}</h2>
+      <h2>${Panel.escapeHtml(series.label)}</h2>
       <div class="meta">${addressText(series) || "—"} · ${series.role} · ${series.sheet}</div>
+      ${Panel.hintHtml(series)}
       <div class="values-display">${vals}</div>
       <div style="margin-top:0.75rem">${editor}</div>
       <p class="hint" style="margin-top:0.85rem">Keys: ${keysHint}. Double-click an input node to focus the editor. Ctrl+Z undoes node moves.</p>
@@ -590,46 +417,7 @@
 
   function commitEdit(series, raw) {
     try {
-      if (series.kind === "enum") {
-        if (!series.options.includes(raw)) throw new Error("Invalid option");
-        inputs[series.id] = raw;
-        return true;
-      }
-      if (series.kind === "enum_int") {
-        const n = Number(raw);
-        if (!series.options.map(Number).includes(n)) throw new Error("Invalid option");
-        inputs[series.id] = n;
-        return true;
-      }
-      if (series.kind === "int" || (series.kind === "float" && series.keys[0] == null)) {
-        const n = Number(raw);
-        if (!Number.isFinite(n)) throw new Error("Not a number");
-        if (series.kind === "int" && !Number.isInteger(n)) throw new Error("Must be an integer");
-        if (
-          series.domain &&
-          (n < series.domain.min || n > series.domain.max)
-        ) {
-          throw new Error("Out of range");
-        }
-        inputs[series.id] = n;
-        return true;
-      }
-      const parts = String(raw)
-        .split(",")
-        .map((part) => part.trim())
-        .filter((part) => part.length > 0);
-      if (parts.length !== series.keys.length) {
-        throw new Error(`Expected ${series.keys.length} values`);
-      }
-      const next = {};
-      series.keys.forEach((key, index) => {
-        const n = Number(parts[index]);
-        if (!Number.isFinite(n) || n < series.domain.min || n > series.domain.max) {
-          throw new Error(`Out of range at ${key}`);
-        }
-        next[key] = n;
-      });
-      inputs[series.id] = next;
+      inputs[series.id] = Panel.parseEdit(series, raw);
       return true;
     } catch (err) {
       toast(err.message || "Invalid value");
@@ -747,8 +535,8 @@
           style: {
             width: 2,
             "curve-style": "bezier",
-            "source-endpoint": "50% 0",
-            "target-endpoint": "-50% 0",
+            "source-endpoint": "outside-to-node",
+            "target-endpoint": "outside-to-node",
             "target-arrow-shape": "triangle",
             "target-arrow-color": "#a8a29e",
             "line-color": "#a8a29e",
@@ -764,7 +552,7 @@
       maxZoom: 2.5,
     });
 
-    applyNeuralLayout(cy);
+    applyLayout(cy);
     try {
       attachHtmlLabels(cy);
     } catch (err) {
@@ -816,7 +604,7 @@
     }
     cy.elements().remove();
     cy.add(buildElements(values));
-    applyNeuralLayout(cy);
+    applyLayout(cy);
     try {
       attachHtmlLabels(cy);
     } catch (err) {
@@ -832,7 +620,7 @@
   }
 
   const root = typeof globalThis !== "undefined" ? globalThis : window;
-  root.TinyDsaGraph = {
+  root.SeriesGraph = {
     backend: BACKEND,
     get SERIES() {
       return SERIES;
@@ -844,16 +632,29 @@
     evaluateRemote,
   };
 
+  /** config.js may set window.SERIES_GRAPH_TITLE for this workbook. */
+  function applyTitle() {
+    const title =
+      typeof window.SERIES_GRAPH_TITLE === "string" && window.SERIES_GRAPH_TITLE
+        ? window.SERIES_GRAPH_TITLE
+        : DEFAULT_TITLE;
+    document.title = title;
+    const heading = document.querySelector(".toolbar h1");
+    if (heading) heading.textContent = title;
+  }
+
   async function main() {
     const cyEl = typeof document !== "undefined" ? document.getElementById("cy") : null;
     if (!cyEl || typeof cytoscape !== "function") return;
 
+    applyTitle();
     cyEl.innerHTML =
       '<p style="padding:1rem;font:14px system-ui;color:#57534e;">Loading FormulaEvaluator graph…</p>';
 
     try {
-      const data = await loadBootstrap();
+      const [data, starterLayout] = await Promise.all([loadBootstrap(), loadStarterLayout()]);
       applyBootstrap(data);
+      STARTER_LAYOUT = starterLayout;
       cyEl.innerHTML = "";
       if (!PREVIEW) {
         document.getElementById("btn-reset").addEventListener("click", () => {
@@ -875,9 +676,14 @@
         toast("API offline — edits need serve_graph_api.py");
       }
     } catch (err) {
-      console.error("Tiny DSA graph failed to initialize", err);
-      cyEl.innerHTML =
-        '<p style="padding:1rem;font:14px system-ui;color:#b91c1c;">Graph failed to load. Serve with <code>uv run python scripts/serve_graph_api.py</code> or provide <code>bootstrap.json</code>.</p>';
+      console.error("Series graph failed to initialize", err);
+      if (cy) {
+        cy.destroy();
+        cy = null;
+      }
+      cyEl.innerHTML = err.layout
+        ? `<p style="padding:1rem;font:14px system-ui;color:#b91c1c;">Graph layout error: ${Panel.escapeHtml(err.message)}</p>`
+        : '<p style="padding:1rem;font:14px system-ui;color:#b91c1c;">Graph failed to load. Serve with <code>uv run python scripts/serve_graph_api.py</code> (FormulaEvaluator) or provide <code>bootstrap.json</code>.</p>';
     }
   }
 
