@@ -1,12 +1,15 @@
 """Series topology for the interactive Q-CRAFT dependency-graph viz.
 
-Dashboard scalars and the hand-written story edges stay. Every series in the
-input, internal, and output binding shards is also a node so FormulaEvaluator
-can return the full bound surface. Addresses come from ``data``.
+Dashboard scalars stay as story nodes. Every series in the input, internal,
+and output binding shards is also a node so FormulaEvaluator can return the
+full bound surface. Addresses come from ``data``. ``EDGES`` follow the
+generated ``Model`` wiring, contracted onto these nodes.
 """
 
 from __future__ import annotations
 
+import ast
+import inspect
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, Literal
@@ -52,53 +55,6 @@ SERIES_IDS: tuple[str, ...] = VIZ_INPUT_IDS + (
     "hot_unadapted_engine_gross_debt_pct_gdp",
     "output_scenarios_debt_to_gdp_summary_paris",
     "output_scenarios_debt_to_gdp_summary_hot_unadapted",
-)
-
-EDGES: tuple[tuple[str, str], ...] = (
-    ("productivity_start", "productivity_growth"),
-    ("productivity_end", "productivity_growth"),
-    ("inflation_start", "inflation_path"),
-    ("inflation_end", "inflation_path"),
-    ("interest_rate_mode", "baseline_interest_rate"),
-    ("real_interest_rate", "baseline_interest_rate"),
-    ("country", "macrofiscal_debt_to_gdp"),
-    ("country", "demography_total_population"),
-    ("demography_scenario", "demography_total_population"),
-    ("country", "climate_data_labour_productivity_growth_variation_paris"),
-    ("macrofiscal_debt_to_gdp", "baseline_debt_to_gdp"),
-    ("productivity_growth", "baseline_debt_to_gdp"),
-    ("demography_total_population", "baseline_debt_to_gdp"),
-    ("baseline_interest_rate", "baseline_debt_to_gdp"),
-    ("inflation_path", "baseline_debt_to_gdp"),
-    ("fiscal_rule_enabled", "baseline_debt_to_gdp"),
-    ("debt_target", "baseline_debt_to_gdp"),
-    ("expenditure_rigidity", "baseline_debt_to_gdp"),
-    ("macrofiscal_debt_to_gdp", "baseline_primary_balance_pct_gdp"),
-    ("productivity_growth", "baseline_primary_balance_pct_gdp"),
-    ("baseline_interest_rate", "baseline_primary_balance_pct_gdp"),
-    ("fiscal_rule_enabled", "baseline_primary_balance_pct_gdp"),
-    ("debt_target", "baseline_primary_balance_pct_gdp"),
-    ("expenditure_rigidity", "baseline_primary_balance_pct_gdp"),
-    ("baseline_primary_balance_pct_gdp", "baseline_overall_balance_pct_gdp"),
-    ("baseline_interest_rate", "baseline_overall_balance_pct_gdp"),
-    ("productivity_growth", "baseline_real_gdp_growth"),
-    ("demography_total_population", "baseline_real_gdp_growth"),
-    ("baseline_debt_to_gdp", "baseline_fiscal_consolidation_gap"),
-    ("baseline_primary_balance_pct_gdp", "baseline_fiscal_consolidation_gap"),
-    ("debt_target", "baseline_fiscal_consolidation_gap"),
-    ("baseline_debt_to_gdp", "paris_engine_gross_debt_pct_gdp"),
-    ("baseline_primary_balance_pct_gdp", "paris_engine_gross_debt_pct_gdp"),
-    (
-        "climate_data_labour_productivity_growth_variation_paris",
-        "paris_engine_gross_debt_pct_gdp",
-    ),
-    ("baseline_debt_to_gdp", "hot_unadapted_engine_gross_debt_pct_gdp"),
-    ("baseline_primary_balance_pct_gdp", "hot_unadapted_engine_gross_debt_pct_gdp"),
-    ("paris_engine_gross_debt_pct_gdp", "output_scenarios_debt_to_gdp_summary_paris"),
-    (
-        "hot_unadapted_engine_gross_debt_pct_gdp",
-        "output_scenarios_debt_to_gdp_summary_hot_unadapted",
-    ),
 )
 
 
@@ -515,8 +471,125 @@ NODES = _append_bound(NODES, "inputs.bindings.yaml", "input")
 NODES = _append_bound(NODES, "internals.bindings.yaml", "internal")
 NODES = _append_bound(NODES, "outputs.bindings.yaml", "output")
 NODES_BY_ID: dict[str, dict[str, Any]] = {node["id"]: node for node in NODES}
+
+
+def _self_reads(tree: ast.AST) -> frozenset[str]:
+    """``self.<name>`` attributes read anywhere under ``tree``."""
+    return frozenset(
+        node.attr
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Attribute)
+        and isinstance(node.value, ast.Name)
+        and node.value.id == "self"
+    )
+
+
+def _scan_formula_reads() -> dict[str, dict[str, frozenset[str]]]:
+    """Per scan helper, the local names each ``<output>_formula`` reads."""
+    from . import internals
+
+    reads: dict[str, dict[str, frozenset[str]]] = {}
+    for fn in ast.parse(inspect.getsource(internals)).body:
+        if not (isinstance(fn, ast.FunctionDef) and fn.name.startswith("scan_")):
+            continue
+        reads[fn.name] = {
+            inner.name.removesuffix("_formula"): frozenset(
+                node.id for node in ast.walk(inner) if isinstance(node, ast.Name)
+            )
+            for inner in fn.body
+            if isinstance(inner, ast.FunctionDef) and inner.name.endswith("_formula")
+        }
+    return reads
+
+
+def _model_reads() -> dict[str, frozenset[str]]:
+    """Map each ``Model`` attribute to the ``Model`` attributes it reads.
+
+    A recurrence-group output (``return self._scan_x.<output>``) reads only
+    what its own ``<output>_formula`` names in the scan helper: scan arguments
+    resolve to the ``Model`` attributes passed for them, and sibling outputs
+    to themselves. Reading the whole ``_scan_x`` would link every scan
+    argument to every output.
+    """
+    (cls,) = ast.parse(inspect.getsource(Model)).body
+    assert isinstance(cls, ast.ClassDef)
+    methods = {
+        item.name: item for item in cls.body if isinstance(item, ast.FunctionDef)
+    }
+    reads = {name: _self_reads(method) for name, method in methods.items()}
+    formulas = _scan_formula_reads()
+    for name, method in methods.items():
+        match method.body:
+            case [
+                ast.Return(
+                    value=ast.Attribute(
+                        value=ast.Attribute(
+                            value=ast.Name(id="self"), attr=scan_attr
+                        ),
+                        attr=output,
+                    )
+                )
+            ] if scan_attr.startswith("_scan_"):
+                pass
+            case _:
+                continue
+        match methods[scan_attr].body:
+            case [
+                ast.Return(
+                    value=ast.Call(
+                        func=ast.Attribute(attr=scan_fn), keywords=keywords
+                    )
+                )
+            ]:
+                pass
+            case _:
+                raise ValueError(f"Model.{scan_attr} is not a scan helper call")
+        arguments = {kw.arg: _self_reads(kw.value) for kw in keywords}
+        names = formulas[scan_fn][output]
+        reads[name] = frozenset(
+            attr
+            for local in names
+            for attr in (
+                arguments[local]
+                if local in arguments
+                else {local}
+                if local in formulas[scan_fn]
+                else ()
+            )
+        )
+    return reads
+
+
+def _model_edges(node_ids: tuple[str, ...]) -> tuple[tuple[str, str], ...]:
+    """Producer -> consumer edges between nodes, through any non-node attributes.
+
+    Unpublished intermediates (``productivity_start_flag``) and recurrence-group
+    scans (``_scan_*``) are not nodes, so each node is linked to the nearest
+    node upstream of it along every path of ``Model`` reads.
+    """
+    reads = _model_reads()
+    nodes = set(node_ids)
+    edges: list[tuple[str, str]] = []
+    for target in node_ids:
+        sources: set[str] = set()
+        seen: set[str] = set()
+        stack = list(reads.get(target, ()))
+        while stack:
+            name = stack.pop()
+            if name in seen:
+                continue
+            seen.add(name)
+            if name in nodes:
+                sources.add(name)
+            else:
+                stack.extend(reads.get(name, ()))
+        edges.extend((source, target) for source in sorted(sources - {target}))
+    return tuple(edges)
+
+
 SERIES_IDS = tuple(node["id"] for node in NODES)
 VIZ_INPUT_IDS = tuple(node["id"] for node in NODES if node["role"] == "input")
+EDGES: tuple[tuple[str, str], ...] = _model_edges(SERIES_IDS)
 
 
 def all_cell_addresses() -> tuple[str, ...]:
