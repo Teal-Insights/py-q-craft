@@ -20,7 +20,6 @@ uv run python scripts/serve_graph_api.py
 # open http://127.0.0.1:8765/
 ```
 
-Docs homepage embeds
-``https://teal-insights.github.io/qcraft-2024-11-15/assets/graph/index.html?preview=1``
-(read-only); click through to the fullscreen page at
+Docs homepage shows `assets/graph/preview.png`, a static screenshot of the
+fitted graph, and links to the fullscreen explorer at
 ``https://teal-insights.github.io/qcraft-2024-11-15/assets/graph/index.html``.

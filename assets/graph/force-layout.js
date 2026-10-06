@@ -4,9 +4,10 @@
  * The export pipeline runs excel-grapher's clustered force layout and writes
  * positions in layout units, where `linkDistance` is the spring rest length.
  * placeNodes maps one link distance to the mean node box footprint, then
- * pushes overlapping boxes apart vertically. x is the input -> output flow, so
- * it is never changed. Scaling alone until no boxes overlap would keep the
- * exact shape, but wide label boxes make that several times the viewport.
+ * pushes overlapping boxes apart horizontally. y is the input -> output flow
+ * (inputs at the top), so it is never changed. Scaling alone until no boxes
+ * overlap would keep the exact shape, but wide label boxes make that several
+ * times the viewport.
  */
 (function (root, factory) {
   const api = factory();
@@ -43,21 +44,21 @@
         const p = placed[ids[i]];
         const q = placed[ids[j]];
         const n = need(o, ids[i], ids[j]);
-        const dy = q.y - p.y;
-        const overlapX = n.x - Math.abs(q.x - p.x);
-        const overlapY = n.y - Math.abs(dy);
+        const dx = q.x - p.x;
+        const overlapX = n.x - Math.abs(dx);
+        const overlapY = n.y - Math.abs(q.y - p.y);
         if (overlapX <= EPS || overlapY <= EPS) continue;
         moved = true;
         // Level boxes split in id order, so the result is deterministic.
-        const d = ((dy < 0 ? -1 : 1) * (overlapY + EPS)) / 2;
-        p.y -= d;
-        q.y += d;
+        const d = ((dx < 0 ? -1 : 1) * (overlapX + EPS)) / 2;
+        p.x -= d;
+        q.x += d;
       }
     }
     return moved;
   }
 
-  /** Last resort if passes do not converge: stretch y until every pair clears. */
+  /** Last resort if passes do not converge: stretch x until every pair clears. */
   function stretchApart(o, ids, placed) {
     let scale = 1;
     for (let i = 0; i < ids.length; i += 1) {
@@ -65,11 +66,11 @@
         const n = need(o, ids[i], ids[j]);
         const dx = Math.abs(placed[ids[i]].x - placed[ids[j]].x);
         const dy = Math.abs(placed[ids[i]].y - placed[ids[j]].y);
-        // Passes split level pairs first, so an x-overlapping pair has dy > 0.
-        if (dx < n.x) scale = Math.max(scale, n.y / dy);
+        // Passes split level pairs first, so a y-overlapping pair has dx > 0.
+        if (dy < n.y && dx > EPS) scale = Math.max(scale, n.x / dx);
       }
     }
-    for (const id of ids) placed[id].y *= scale;
+    for (const id of ids) placed[id].x *= scale;
   }
 
   /**

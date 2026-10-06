@@ -548,7 +548,8 @@
       ],
       layout: { name: "preset" },
       wheelSensitivity: 0.25,
-      minZoom: 0.3,
+      // cy.fit() will not zoom out past minZoom. A large graph needs far below 1.
+      minZoom: 0.001,
       maxZoom: 2.5,
     });
 
@@ -558,7 +559,11 @@
     } catch (err) {
       console.warn("HTML labels unavailable; using native labels", err);
     }
-    cy.fit(undefined, PREVIEW ? 28 : 48);
+    const initialPadding = PREVIEW ? 28 : 48;
+    fitGraph(initialPadding);
+    // The container can still be 0×0 on the first paint (iframe, hidden tab).
+    requestAnimationFrame(() => fitGraph(initialPadding));
+    window.addEventListener("resize", () => fitGraph(initialPadding));
 
     if (PREVIEW) return;
 
@@ -610,13 +615,21 @@
     } catch (err) {
       console.warn("HTML labels unavailable; using native labels", err);
     }
-    cy.fit(undefined, 48);
+    fitGraph(48);
     renderSide(null);
     toast("Reset to workbook defaults");
   }
 
-  function fitGraph() {
-    cy.fit(undefined, 40);
+  function fitPadding(padding) {
+    if (typeof padding === "number") return padding;
+    return PREVIEW ? 28 : 48;
+  }
+
+  /** Fit uses the container's current size, which is 0 until layout. */
+  function fitGraph(padding) {
+    if (!cy) return;
+    cy.resize();
+    cy.fit(undefined, fitPadding(padding));
   }
 
   const root = typeof globalThis !== "undefined" ? globalThis : window;
@@ -649,7 +662,7 @@
 
     applyTitle();
     cyEl.innerHTML =
-      '<p style="padding:1rem;font:14px system-ui;color:#57534e;">Loading FormulaEvaluator graph…</p>';
+      '<p style="padding:1rem;font:14px system-ui;color:#57534e;">Loading the dependency graph… This graph is large and can take up to a minute to draw.</p>';
 
     try {
       const [data, starterLayout] = await Promise.all([loadBootstrap(), loadStarterLayout()]);
@@ -660,7 +673,7 @@
         document.getElementById("btn-reset").addEventListener("click", () => {
           resetAll();
         });
-        document.getElementById("btn-fit").addEventListener("click", fitGraph);
+        document.getElementById("btn-fit").addEventListener("click", () => fitGraph(40));
         document.addEventListener("keydown", (event) => {
           const key = event.key.toLowerCase();
           if (!(event.ctrlKey || event.metaKey) || key !== "z" || event.shiftKey) return;
